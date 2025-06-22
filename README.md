@@ -39,3 +39,6 @@ allprojects {
 }
 
 
+
+npx react-native@latest init SimpleChat --version 0.73.3
+
