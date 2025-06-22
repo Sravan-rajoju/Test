@@ -7,4 +7,8 @@ location of your Java installation.
 D:\react\Android\SimpleChat\android>
 
 
+cd android
+gradlew clean
+gradlew assembleDebug --stacktrace
+
 
