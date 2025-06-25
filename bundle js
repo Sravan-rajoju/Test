@@ -1,80 +1,114 @@
-const isTwoColumnField = specialTwoColumnFields.includes($input.attr('id')) || specialTwoColumnFields.includes($input.attr('name'));
+// === BEGIN CONFIGURATION === const specialTwoColumnFields = [ 'ENTITY_NAME', 'ENTITY_ADDRESS', 'ENTITY_COUNTRY', 'ENTITY_STARTUP_STATUS', 'ENTITY_DATE', 'ENTITY_LEI', 'ENTITY_EMAIL', 'ENTITY_ACTIVITY_CODE', 'ENTITY_ACCOUNT_YEAR' ];
 
-if (isTwoColumnField) {
-    var twoColRow = $('<div class="row-container two-column-row"></div>');
+$(document).ready(function () { $('div[id$="_div"]').each(function () { var targetDiv = $(this); var rows = targetDiv.find('tr');
 
-    var labelCell = $('<div class="label-cell"></div>').append($label);
-    var inputCell = $('<div class="input-cell"></div>');
+targetDiv.find('#messageDisplay').remove();
+var newRow = $('<div class="row-container"></div>');
+var count = 0;
 
-    // If it's a date field
-    if ($input.hasClass('DATE_M') || $input.hasClass('DATE_P') || $input.hasClass('DATE_O')) {
+rows.each(function () {
+  var $row = $(this);
+  var inputs = $row.find('input,radio, select, textarea, input[type="hidden"]');
+  var labels = $row.find('.FldLabel, .FldLabel.star span');
+  var buttons = $row.find('input[type="button"], button');
+
+  inputs.each(function (index) {
+    var $input = $(this);
+    var $label = $(labels[index]);
+
+    const inputId = $input.attr('id') || '';
+    const inputName = $input.attr('name') || '';
+    const isTwoColumnField = specialTwoColumnFields.includes(inputId) || specialTwoColumnFields.includes(inputName);
+
+    if ($input.is('input[type="hidden"]')) {
+      targetDiv.append($input);
+      return;
+    }
+
+    if (isTwoColumnField) {
+      var row = $('<div class="row-container two-column-row"></div>');
+      var labelCell = $('<div class="label-cell"></div>').append($label);
+      var inputCell = $('<div class="input-cell"></div>');
+
+      if ($input.hasClass('DATE_M') || $input.hasClass('DATE_P') || $input.hasClass('DATE_O')) {
         $('#ICO_' + $input.attr('id')).remove();
-        $input.datepicker({
-            showOn: "focus",
-            dateFormat: 'dd/mm/yy'
-        });
+        $input.datepicker({ showOn: "focus", dateFormat: 'dd/mm/yy' });
 
         var calendarIcon = $('<svg>', {
-            width: "22",
-            height: "20",
-            viewBox: "0 0 22 20",
-            fill: "none",
-            class: "calendarbutton",
-            id: "ICO_" + $input.attr('id'),
-            title: "Pick a Date",
-            html: `<path d="M1.6665 7H20.3332M1.6665 7V15.8002 ..."/>`
+          width: "20",
+          height: "20",
+          viewBox: "0 0 22 20",
+          fill: "none",
+          class: "calendarbutton",
+          id: "ICO_" + $input.attr('id'),
+          title: "Pick a Date",
+          html: `<path d="M1.6665 7H20.3332M1.6665 7V15.8002..."/>`
+        }).on('click', function () {
+          $input.focus();
         });
 
         var dateWrapper = $('<div class="date-wrapper"></div>');
         dateWrapper.append($input).append(calendarIcon);
-
-        calendarIcon.on('click', function () {
-            $input.focus();
-        });
-
         inputCell.append(dateWrapper);
-    } else {
+      } else if ($input.hasClass('AMT_P')) {
+        var amtWrapper = $('<div class="amount-wrapper"></div>');
+        var currencyDropdown = $row.find('select').first();
+
+        currencyDropdown.addClass('currency-dropdown');
+        $input.addClass('amount-input');
+
+        amtWrapper.append(currencyDropdown).append($input);
+        inputCell.append(amtWrapper);
+      } else {
         $input.addClass('input-field');
         inputCell.append($input);
-    }
+      }
 
-    // Optional: add buttons if any
-    buttons.each(function () {
+      buttons.each(function () {
         inputCell.append($(this));
-    });
+      });
 
-    // Add message display
-    var messageDisplay = $('<div>', {
-        id: 'messageDisplay_' + $input.attr('name'),
+      var messageDisplay = $('<div>', {
+        id: 'messageDisplay_' + inputName,
         class: 'error-message',
         text: ''
+      });
+      inputCell.append(messageDisplay);
+
+      row.append(labelCell).append(inputCell);
+      targetDiv.append(row);
+      return;
+    }
+
+    // Default behavior for grouped layout
+    var fieldWrapper = $('<div class="field-wrapper"></div>').append($label);
+    $input.addClass('input-field');
+    fieldWrapper.append($input);
+
+    buttons.each(function () {
+      fieldWrapper.append($(this));
     });
-    inputCell.append(messageDisplay);
 
-    twoColRow.append(labelCell).append(inputCell);
-    targetDiv.append(twoColRow);
+    var messageDisplay = $('<div>', {
+      id: 'messageDisplay_' + inputName,
+      class: 'error-message',
+      text: ''
+    });
+    fieldWrapper.append(messageDisplay);
 
-    // Skip rest of logic
-    return;
+    newRow.append(fieldWrapper);
+    count++;
+    if (count === 3) {
+      targetDiv.append(newRow);
+      newRow = $('<div class="row-container"></div>');
+      count = 0;
+    }
+  });
+});
+
+if (newRow.children().length > 0) {
+  targetDiv.append(newRow);
 }
 
+}); });
 
-
-
-.two-column-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    width: 100%;
-}
-
-.label-cell {
-    flex: 0 0 35%;
-    font-weight: bold;
-    text-align: right;
-    padding-right: 10px;
-}
-
-.input-cell {
-    flex: 1;
-}
