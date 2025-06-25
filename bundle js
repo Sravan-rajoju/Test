@@ -97,3 +97,26 @@ if ($row.hasClass('four-col-layout')) {
     padding: 6px 8px;
     box-sizing: border-box;
 }
+
+
+
+
+
+if ($row.hasClass('four-col-layout')) {
+    const fourColRow = $('<div class="row-container four-column-row"></div>');
+    const cells = $row.find('td');
+
+    for (let i = 0; i < cells.length; i += 2) {
+        const $label = $(cells[i]).clone();
+        const $input = $(cells[i + 1]).find('input, select, textarea').first().clone();
+
+        const wrapper = $('<div class="field-wrapper four-col-field"></div>');
+        wrapper.append($label);
+        wrapper.append($input);
+
+        fourColRow.append(wrapper);
+    }
+
+    targetDiv.append(fourColRow);
+    return; // Skip further processing for this row
+}
