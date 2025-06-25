@@ -1,66 +1,17 @@
 <tr class="four-field-inline-row">
-    <td class="FldLabel">Label 1</td>
-    <td><input id="FIELD1" name="FIELD1" /></td>
-
-    <td class="FldLabel">Label 2</td>
-    <td><input id="FIELD2" name="FIELD2" /></td>
-
-    <td class="FldLabel">Label 3</td>
-    <td><input id="FIELD3" name="FIELD3" /></td>
-
-    <td class="FldLabel">Label 4</td>
-    <td><input id="FIELD4" name="FIELD4" /></td>
+	<td class="FldLabel" id="TEST1" style="height:50px"><h3>i.Person Resident in India</h3></td>
+	<td><input name="" type="text"  id="" title=""   style="display:none;height:1px"></td>			
 </tr>
-
-
-
-
-
-if ($row.hasClass('four-field-inline-row')) {
-    const inlineRow = $('<div class="row-container four-inline-fields"></div>');
-    const cells = $row.find('td');
-
-    for (let i = 0; i < cells.length; i += 2) {
-        const labelText = $(cells[i]).text().trim();
-        const $input = $(cells[i + 1]).find('input, select, textarea').first().clone();
-
-        const fieldGroup = $('<div class="inline-field-group"></div>');
-        const label = $('<label class="inline-label"></label>').text(labelText);
-        $input.addClass('inline-input');
-
-        fieldGroup.append(label).append($input);
-        inlineRow.append(fieldGroup);
-    }
-
-    targetDiv.append(inlineRow);
-    return;
-}
-
-
-
-
-.row-container.four-inline-fields {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: nowrap;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.inline-field-group {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex: 1 1 23%; /* Fit 4 in a row */
-}
-
-.inline-label {
-    white-space: nowrap;
-    font-weight: 500;
-}
-
-.inline-input {
-    flex: 1;
-    padding: 5px 8px;
-    min-width: 100px;
-}
+								
+<tr class="four-field-inline-row">
+	<td class="FldLabel" id="TEST2" style="height:50px"><h3>% Stake</h3></td>
+	<td><input name="" type="text"  id="" title=""   style="display:none;height:1px"></td>			
+</tr>
+<tr class="four-field-inline-row">
+	<td class="FldLabel" id="TEST3" style="height:50px"><h3>ii.Foregin Partner(s)</h3></td>
+	<td><input name="" type="text"  id="" title=""   style="display:none;height:1px"></td>			
+</tr>
+<tr class="four-field-inline-row">
+	<td class="FldLabel" id="TEST4" style="height:50px"><h3>% Stake</h3></td>
+	<td><input name="" type="text"  id="" title=""   style="display:none;height:1px"></td>			
+</tr>
