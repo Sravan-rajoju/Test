@@ -1,51 +1,42 @@
-const fourColumnFields = [
-  'FIELD1', 'FIELD2', 'FIELD3', 'FIELD4',
-  'FIELD5', 'FIELD6', 'FIELD7', 'FIELD8'
-];
+<tr class="four-col-layout">
+    <td class="FldLabel">Label 1</td>
+    <td><input id="FIELD1" name="FIELD1" /></td>
+    <td class="FldLabel">Label 2</td>
+    <td><input id="FIELD2" name="FIELD2" /></td>
+    <td class="FldLabel">Label 3</td>
+    <td><input id="FIELD3" name="FIELD3" /></td>
+    <td class="FldLabel">Label 4</td>
+    <td><input id="FIELD4" name="FIELD4" /></td>
+</tr>
 
 
 
-// Check and render remaining 4-col fields if any
-if (fourColBuffer.length > 0) {
-    renderFourColumnRow(targetDiv, fourColBuffer);
-    fourColBuffer = [];
-}
 
 
 
+if ($row.hasClass('four-col-layout')) {
+    const fourColRow = $('<div class="row-container four-column-row"></div>');
 
-if (fourColumnFields.includes($input.attr('id')) || fourColumnFields.includes($input.attr('name'))) {
-    fourColBuffer.push({ label: $label, input: $input });
+    const cells = $row.find('td');
+    for (let i = 0; i < cells.length; i += 2) {
+        const $label = $(cells[i]);
+        const $inputCell = $(cells[i + 1]);
+        const $input = $inputCell.find('input, select, textarea');
 
-    if (fourColBuffer.length === 4) {
-        renderFourColumnRow(targetDiv, fourColBuffer);
-        fourColBuffer = [];
+        if ($input.length === 0) continue;
+
+        const wrapper = $('<div class="field-wrapper four-col-field"></div>');
+        wrapper.append($label.clone());
+        wrapper.append($input.clone());
+
+        fourColRow.append(wrapper);
     }
 
-    return; // Skip rest of the processing for this input
+    targetDiv.append(fourColRow);
+    return; // Skip further processing of this row
 }
 
 
-
-
-let fourColBuffer = [];
-
-
-
-
-function renderFourColumnRow(container, fields) {
-    const row = $('<div class="row-container four-column-row"></div>');
-
-    fields.forEach(item => {
-        const wrapper = $('<div class="field-wrapper four-col-field"></div>');
-        const $label = $(item.label).addClass('label-inline');
-        const $input = $(item.input).addClass('input-inline');
-        wrapper.append($label).append($input);
-        row.append(wrapper);
-    });
-
-    container.append(row);
-}
 
 
 
@@ -53,23 +44,24 @@ function renderFourColumnRow(container, fields) {
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
+    margin: 10px 0;
     gap: 10px;
-    margin-bottom: 10px;
 }
 
 .field-wrapper.four-col-field {
-    width: 23%;
+    flex: 1 1 22%;
     display: flex;
     flex-direction: column;
 }
 
-.label-inline {
-    font-weight: 500;
-    margin-bottom: 2px;
-    white-space: nowrap;
+.field-wrapper.four-col-field .FldLabel {
+    font-weight: bold;
+    margin-bottom: 4px;
 }
 
-.input-inline {
+.field-wrapper.four-col-field input,
+.field-wrapper.four-col-field select,
+.field-wrapper.four-col-field textarea {
     width: 100%;
     padding: 6px 8px;
     box-sizing: border-box;
