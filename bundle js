@@ -1,235 +1,76 @@
-7// Finalized Two-Column Layout With Alignment Fixes
+const fourColumnFields = [
+  'FIELD1', 'FIELD2', 'FIELD3', 'FIELD4',
+  'FIELD5', 'FIELD6', 'FIELD7', 'FIELD8'
+];
 
-$(document).ready(function () { $('div[id$="_div"]').each(function () { var targetDiv = $(this); var rows = targetDiv.find('tr');
 
-targetDiv.find('#messageDisplay').remove();
-var newRow = $('<div class="row-container"></div>');
-var count = 0;
 
-rows.each(function () {
-  var $row = $(this);
-  var inputs = $row.find('input,radio, select, textarea, input[type="hidden"]');
-  var labels = $row.find('.FldLabel, .FldLabel.star span');
-  var buttons = $row.find('input[type="button"], button');
-
-  inputs.each(function (index) {
-    var $input = $(this);
-    var $label = $(labels[index]);
-
-    const inputName = $input.attr('name') || '';
-    const isTwoColumnField = $row.hasClass('two-col-align') || $input.hasClass('two-col-field');
-
-    if ($input.is('input[type="hidden"]')) {
-      targetDiv.append($input);
-      return;
-    }
-
-    if (isTwoColumnField) {
-      const twoColWrapper = $('<div class="row-container two-column-row"></div>');
-      const labelCol = $('<div class="label-cell"></div>').append($label);
-      const inputCol = $('<div class="input-cell"></div>');
-
-      if ($input.hasClass('DATE_M') || $input.hasClass('DATE_P') || $input.hasClass('DATE_O')) {
-        $('#ICO_' + $input.attr('id')).remove();
-        $input.datepicker({ showOn: "focus", dateFormat: 'dd/mm/yy' });
-        const calendarIcon = $('<svg>', {
-          width: "20",
-          height: "20",
-          viewBox: "0 0 22 20",
-          fill: "none",
-          class: "calendarbutton",
-          id: "ICO_" + $input.attr('id'),
-          title: "Pick a Date",
-          html: '<path d="M1.6665 7H20.3332M1.6665 7V15.8002..."/>'
-        }).on('click', () => $input.focus());
-
-        const dateWrapper = $('<div class="date-wrapper"></div>').append($input).append(calendarIcon);
-        inputCol.append(dateWrapper);
-      } else if ($input.hasClass('AMT_M') || $input.hasClass('AMT_P')) {
-        const amtWrapper = $('<div class="amount-wrapper"></div>');
-        const currency = $row.find('select').first();
-        currency.addClass('currency-dropdown');
-        $input.addClass('amount-input');
-        amtWrapper.append(currency).append($input);
-        inputCol.append(amtWrapper);
-      } else {
-        $input.addClass('input-field');
-        inputCol.append($input);
-      }
-
-      buttons.each(function () {
-        inputCol.append($(this));
-      });
-
-      inputCol.append($('<div>', {
-        id: 'messageDisplay_' + inputName,
-        class: 'error-message',
-        text: ''
-      }));
-
-      twoColWrapper.append(labelCol).append(inputCol);
-      targetDiv.append(twoColWrapper);
-      return;
-    }
-
-    const fieldWrapper = $('<div class="field-wrapper"></div>').append($label);
-    $input.addClass('input-field');
-    fieldWrapper.append($input);
-
-    buttons.each(function () {
-      fieldWrapper.append($(this));
-    });
-
-    fieldWrapper.append($('<div>', {
-      id: 'messageDisplay_' + inputName,
-      class: 'error-message',
-      text: ''
-    }));
-
-    newRow.append(fieldWrapper);
-    count++;
-    if (count === 3) {
-      targetDiv.append(newRow);
-      newRow = $('<div class="row-container"></div>');
-      count = 0;
-    }
-  });
-});
-
-if (newRow.children().length > 0) {
-  targetDiv.append(newRow);
+// Check and render remaining 4-col fields if any
+if (fourColBuffer.length > 0) {
+    renderFourColumnRow(targetDiv, fourColBuffer);
+    fourColBuffer = [];
 }
 
-}); });
 
 
 
+if (fourColumnFields.includes($input.attr('id')) || fourColumnFields.includes($input.attr('name'))) {
+    fourColBuffer.push({ label: $label, input: $input });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const isTwoColumnField = $row.hasClass('two-col-align') || $input.hasClass('two-col-field');
-
-if (isTwoColumnField) {
-    var twoColRow = $('<div class="row-container two-column-row"></div>');
-    var labelCell = $('<div class="label-cell"></div>').append($label);
-    var inputCell = $('<div class="input-cell"></div>');
-
-    if ($input.hasClass('DATE_M') || $input.hasClass('DATE_P') || $input.hasClass('DATE_O')) {
-        $('#ICO_' + $input.attr('id')).remove();
-        $input.datepicker({
-            showOn: "focus",
-            dateFormat: 'dd/mm/yy'
-        });
-
-        var calendarIcon = $('<svg>', {
-            width: "20",
-            height: "20",
-            viewBox: "0 0 22 20",
-            fill: "none",
-            class: "calendarbutton",
-            id: "ICO_" + $input.attr('id'),
-            title: "Pick a Date",
-            html: `<path d="M1.6665 7H20.3332M1.6665 7V15.8002..."/>`
-        }).on('click', function () {
-            $input.focus();
-        });
-
-        var dateWrapper = $('<div class="date-wrapper"></div>');
-        dateWrapper.append($input).append(calendarIcon);
-        inputCell.append(dateWrapper);
-    }
-    else if ($input.hasClass('AMT_M') || $input.hasClass('AMT_P')) {
-        var amtWrapper = $('<div class="amount-wrapper"></div>');
-        var currencyDropdown = $row.find('select').first();
-        currencyDropdown.addClass('currency-dropdown');
-        $input.addClass('amount-input');
-        amtWrapper.append(currencyDropdown).append($input);
-        inputCell.append(amtWrapper);
-    } else {
-        $input.addClass('input-field');
-        inputCell.append($input);
+    if (fourColBuffer.length === 4) {
+        renderFourColumnRow(targetDiv, fourColBuffer);
+        fourColBuffer = [];
     }
 
-    // Append message display + buttons if needed
-    buttons.each(function () {
-        inputCell.append($(this));
+    return; // Skip rest of the processing for this input
+}
+
+
+
+
+let fourColBuffer = [];
+
+
+
+
+function renderFourColumnRow(container, fields) {
+    const row = $('<div class="row-container four-column-row"></div>');
+
+    fields.forEach(item => {
+        const wrapper = $('<div class="field-wrapper four-col-field"></div>');
+        const $label = $(item.label).addClass('label-inline');
+        const $input = $(item.input).addClass('input-inline');
+        wrapper.append($label).append($input);
+        row.append(wrapper);
     });
 
-    inputCell.append($('<div>', {
-        id: 'messageDisplay_' + ($input.attr('name') || ''),
-        class: 'error-message',
-        text: ''
-    }));
-
-    twoColRow.append(labelCell).append(inputCell);
-    targetDiv.append(twoColRow);
-    return;
+    container.append(row);
 }
-	
 
 
 
+.row-container.four-column-row {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
 
+.field-wrapper.four-col-field {
+    width: 23%;
+    display: flex;
+    flex-direction: column;
+}
 
+.label-inline {
+    font-weight: 500;
+    margin-bottom: 2px;
+    white-space: nowrap;
+}
 
-
-
-
-
-
-
-
-if (isFourColumnField) {
-    if (!window.fourColBuffer) window.fourColBuffer = [];
-
-    window.fourColBuffer.push({ label: $label, input: $input });
-
-    if (window.fourColBuffer.length === 4) {
-        const fourColRow = $('<div class="row-container four-column-row"></div>');
-        
-        window.fourColBuffer.forEach(function (field) {
-            const wrapper = $('<div class="field-wrapper four-col-field"></div>');
-            wrapper.append(field.label).append(field.input);
-            fourColRow.append(wrapper);
-        });
-
-        targetDiv.append(fourColRow);
-        window.fourColBuffer = [];
-    }
-
-    return; // Skip default processing for this field
+.input-inline {
+    width: 100%;
+    padding: 6px 8px;
+    box-sizing: border-box;
 }
