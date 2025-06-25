@@ -120,3 +120,20 @@ if ($row.hasClass('four-col-layout')) {
     targetDiv.append(fourColRow);
     return; // Skip further processing for this row
 }
+
+
+
+
+if ($row.hasClass('four-field-row')) {
+    const fourFieldContainer = $('<div class="row-container four-fields-layout"></div>');
+    const cells = $row.find('td');
+
+    for (let i = 0; i < cells.length; i += 2) {
+        const label = $(cells[i]).text().trim();
+        const input = $(cells[i + 1]).find('input, select, textarea').first().clone();
+
+        const fieldWrapper = $('<div class="field-block"></div>');
+        const labelElem = $('<label class="field-label"></label>').text(label);
+
+        input.addClass('input-field'); // optional styling
+        fieldWrapper.append(labelElem).append(input);
