@@ -1,71 +1,70 @@
-/* Aligns the entire two-column row */
-.two-column-row {
+/* Container to center all two-column rows */
+.row-container.two-column-row {
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  margin: 8px 0;
+  justify-content: center; /* centers entire row */
   width: 100%;
-  max-width: 1000px;  /* or adjust as needed */
-  margin-left: auto;
-  margin-right: auto;
+  margin: 10px auto;
+  box-sizing: border-box;
 }
 
-/* Label cell - fixed width */
-.label-cell {
-  width: 40%;
+/* Actual inner structure (left label, right field) */
+.row-container.two-column-row > .label-cell {
+  flex: 0 0 40%;
+  max-width: 40%;
+  padding-right: 10px;
   text-align: right;
-  padding-right: 12px;
   font-weight: 500;
   white-space: nowrap;
+  box-sizing: border-box;
 }
 
-/* Input cell - flexible */
-.input-cell {
-  width: 60%;
+.row-container.two-column-row > .input-cell {
+  flex: 0 0 50%;
+  max-width: 50%;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  box-sizing: border-box;
 }
 
 /* Date wrapper */
 .date-wrapper {
   display: flex;
   align-items: center;
-  gap: 6px;
   width: 100%;
+  gap: 6px;
 }
 
-/* Calendar icon */
 .calendarbutton {
   cursor: pointer;
   width: 20px;
   height: 20px;
-  margin-left: 4px;
+  flex-shrink: 0;
 }
 
-/* Amount and currency alignment */
+/* Amount and currency wrapper */
 .amount-wrapper {
   display: flex;
-  gap: 10px;
   width: 100%;
   align-items: center;
+  gap: 10px;
 }
 
-.amount-wrapper .amount-input {
+.currency-dropdown {
+  width: 90px;
+  min-width: 80px;
+}
+
+.amount-input {
   flex: 1;
+  min-width: 100px;
 }
 
-.amount-wrapper .currency-dropdown {
-  width: 80px;
-  min-width: 70px;
-}
-
-/* Optional: consistent input styling */
-.input-field,
-textarea,
-select {
-  padding: 5px 8px;
+/* All inputs inside right cell */
+.input-cell input,
+.input-cell select,
+.input-cell textarea {
   width: 100%;
+  padding: 6px 8px;
   box-sizing: border-box;
 }
