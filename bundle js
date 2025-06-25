@@ -1,4 +1,4 @@
-// Finalized Two-Column Layout With Alignment Fixes
+7// Finalized Two-Column Layout With Alignment Fixes
 
 $(document).ready(function () { $('div[id$="_div"]').each(function () { var targetDiv = $(this); var rows = targetDiv.find('tr');
 
@@ -201,3 +201,35 @@ if (isTwoColumnField) {
 }
 	
 
+
+
+
+
+
+
+
+
+
+
+
+
+if (isFourColumnField) {
+    if (!window.fourColBuffer) window.fourColBuffer = [];
+
+    window.fourColBuffer.push({ label: $label, input: $input });
+
+    if (window.fourColBuffer.length === 4) {
+        const fourColRow = $('<div class="row-container four-column-row"></div>');
+        
+        window.fourColBuffer.forEach(function (field) {
+            const wrapper = $('<div class="field-wrapper four-col-field"></div>');
+            wrapper.append(field.label).append(field.input);
+            fourColRow.append(wrapper);
+        });
+
+        targetDiv.append(fourColRow);
+        window.fourColBuffer = [];
+    }
+
+    return; // Skip default processing for this field
+}
