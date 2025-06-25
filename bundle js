@@ -1,4 +1,4 @@
-// === BEGIN CONFIGURATION === const specialTwoColumnFields = [ 'ENTITY_NAME', 'ENTITY_ADDRESS', 'ENTITY_COUNTRY', 'ENTITY_STARTUP_STATUS', 'ENTITY_DATE', 'ENTITY_LEI', 'ENTITY_EMAIL', 'ENTITY_ACTIVITY_CODE', 'ENTITY_ACCOUNT_YEAR' ];
+// Finalized Two-Column Layout With Alignment Fixes
 
 $(document).ready(function () { $('div[id$="_div"]').each(function () { var targetDiv = $(this); var rows = targetDiv.find('tr');
 
@@ -16,9 +16,8 @@ rows.each(function () {
     var $input = $(this);
     var $label = $(labels[index]);
 
-    const inputId = $input.attr('id') || '';
     const inputName = $input.attr('name') || '';
-    const isTwoColumnField = specialTwoColumnFields.includes(inputId) || specialTwoColumnFields.includes(inputName);
+    const isTwoColumnField = $row.hasClass('two-col-align') || $input.hasClass('two-col-field');
 
     if ($input.is('input[type="hidden"]')) {
       targetDiv.append($input);
@@ -26,15 +25,14 @@ rows.each(function () {
     }
 
     if (isTwoColumnField) {
-      var row = $('<div class="row-container two-column-row"></div>');
-      var labelCell = $('<div class="label-cell"></div>').append($label);
-      var inputCell = $('<div class="input-cell"></div>');
+      const twoColWrapper = $('<div class="row-container two-column-row"></div>');
+      const labelCol = $('<div class="label-cell"></div>').append($label);
+      const inputCol = $('<div class="input-cell"></div>');
 
       if ($input.hasClass('DATE_M') || $input.hasClass('DATE_P') || $input.hasClass('DATE_O')) {
         $('#ICO_' + $input.attr('id')).remove();
         $input.datepicker({ showOn: "focus", dateFormat: 'dd/mm/yy' });
-
-        var calendarIcon = $('<svg>', {
+        const calendarIcon = $('<svg>', {
           width: "20",
           height: "20",
           viewBox: "0 0 22 20",
@@ -42,46 +40,39 @@ rows.each(function () {
           class: "calendarbutton",
           id: "ICO_" + $input.attr('id'),
           title: "Pick a Date",
-          html: `<path d="M1.6665 7H20.3332M1.6665 7V15.8002..."/>`
-        }).on('click', function () {
-          $input.focus();
-        });
+          html: '<path d="M1.6665 7H20.3332M1.6665 7V15.8002..."/>'
+        }).on('click', () => $input.focus());
 
-        var dateWrapper = $('<div class="date-wrapper"></div>');
-        dateWrapper.append($input).append(calendarIcon);
-        inputCell.append(dateWrapper);
-      } else if ($input.hasClass('AMT_P')) {
-        var amtWrapper = $('<div class="amount-wrapper"></div>');
-        var currencyDropdown = $row.find('select').first();
-
-        currencyDropdown.addClass('currency-dropdown');
+        const dateWrapper = $('<div class="date-wrapper"></div>').append($input).append(calendarIcon);
+        inputCol.append(dateWrapper);
+      } else if ($input.hasClass('AMT_M') || $input.hasClass('AMT_P')) {
+        const amtWrapper = $('<div class="amount-wrapper"></div>');
+        const currency = $row.find('select').first();
+        currency.addClass('currency-dropdown');
         $input.addClass('amount-input');
-
-        amtWrapper.append(currencyDropdown).append($input);
-        inputCell.append(amtWrapper);
+        amtWrapper.append(currency).append($input);
+        inputCol.append(amtWrapper);
       } else {
         $input.addClass('input-field');
-        inputCell.append($input);
+        inputCol.append($input);
       }
 
       buttons.each(function () {
-        inputCell.append($(this));
+        inputCol.append($(this));
       });
 
-      var messageDisplay = $('<div>', {
+      inputCol.append($('<div>', {
         id: 'messageDisplay_' + inputName,
         class: 'error-message',
         text: ''
-      });
-      inputCell.append(messageDisplay);
+      }));
 
-      row.append(labelCell).append(inputCell);
-      targetDiv.append(row);
+      twoColWrapper.append(labelCol).append(inputCol);
+      targetDiv.append(twoColWrapper);
       return;
     }
 
-    // Default behavior for grouped layout
-    var fieldWrapper = $('<div class="field-wrapper"></div>').append($label);
+    const fieldWrapper = $('<div class="field-wrapper"></div>').append($label);
     $input.addClass('input-field');
     fieldWrapper.append($input);
 
@@ -89,12 +80,11 @@ rows.each(function () {
       fieldWrapper.append($(this));
     });
 
-    var messageDisplay = $('<div>', {
+    fieldWrapper.append($('<div>', {
       id: 'messageDisplay_' + inputName,
       class: 'error-message',
       text: ''
-    });
-    fieldWrapper.append(messageDisplay);
+    }));
 
     newRow.append(fieldWrapper);
     count++;
