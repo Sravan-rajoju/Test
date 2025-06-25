@@ -1,131 +1,48 @@
-6/* Container to center all two-column rows */
 .row-container.two-column-row {
   display: flex;
-  justify-content: center; /* centers entire row */
+  justify-content: center;
   width: 100%;
-  margin: 10px auto;
-  box-sizing: border-box;
+  margin: 10px 0;
 }
 
-/* Actual inner structure (left label, right field) */
-.row-container.two-column-row > .label-cell {
+.label-cell {
   flex: 0 0 40%;
   max-width: 40%;
-  padding-right: 10px;
   text-align: right;
-  font-weight: 500;
+  padding-right: 10px;
   white-space: nowrap;
-  box-sizing: border-box;
 }
 
-.row-container.two-column-row > .input-cell {
+.input-cell {
   flex: 0 0 50%;
   max-width: 50%;
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
-  box-sizing: border-box;
 }
 
-/* Date wrapper */
 .date-wrapper {
   display: flex;
   align-items: center;
-  width: 100%;
   gap: 6px;
 }
 
 .calendarbutton {
-  cursor: pointer;
   width: 20px;
   height: 20px;
-  flex-shrink: 0;
+  cursor: pointer;
 }
 
-/* Amount and currency wrapper */
 .amount-wrapper {
   display: flex;
-  width: 100%;
-  align-items: center;
   gap: 10px;
-}
-
-.currency-dropdown {
-  width: 90px;
-  min-width: 80px;
+  align-items: center;
 }
 
 .amount-input {
   flex: 1;
-  min-width: 100px;
 }
 
-/* All inputs inside right cell */
-.input-cell input,
-.input-cell select,
-.input-cell textarea {
-  width: 100%;
-  padding: 6px 8px;
-  box-sizing: border-box;
-}
-
-
-
-const isTwoColumnField = $row.hasClass('two-col-align') || $input.hasClass('two-col-field');
-
-if (isTwoColumnField) {
-    var twoColRow = $('<div class="row-container two-column-row"></div>');
-    var labelCell = $('<div class="label-cell"></div>').append($label);
-    var inputCell = $('<div class="input-cell"></div>');
-
-    if ($input.hasClass('DATE_M') || $input.hasClass('DATE_P') || $input.hasClass('DATE_O')) {
-        $('#ICO_' + $input.attr('id')).remove();
-        $input.datepicker({
-            showOn: "focus",
-            dateFormat: 'dd/mm/yy'
-        });
-
-        var calendarIcon = $('<svg>', {
-            width: "20",
-            height: "20",
-            viewBox: "0 0 22 20",
-            fill: "none",
-            class: "calendarbutton",
-            id: "ICO_" + $input.attr('id'),
-            title: "Pick a Date",
-            html: `<path d="M1.6665 7H20.3332M1.6665 7V15.8002..."/>`
-        }).on('click', function () {
-            $input.focus();
-        });
-
-        var dateWrapper = $('<div class="date-wrapper"></div>');
-        dateWrapper.append($input).append(calendarIcon);
-        inputCell.append(dateWrapper);
-    }
-    else if ($input.hasClass('AMT_M') || $input.hasClass('AMT_P')) {
-        var amtWrapper = $('<div class="amount-wrapper"></div>');
-        var currencyDropdown = $row.find('select').first();
-        currencyDropdown.addClass('currency-dropdown');
-        $input.addClass('amount-input');
-        amtWrapper.append(currencyDropdown).append($input);
-        inputCell.append(amtWrapper);
-    } else {
-        $input.addClass('input-field');
-        inputCell.append($input);
-    }
-
-    // Append message display + buttons if needed
-    buttons.each(function () {
-        inputCell.append($(this));
-    });
-
-    inputCell.append($('<div>', {
-        id: 'messageDisplay_' + ($input.attr('name') || ''),
-        class: 'error-message',
-        text: ''
-    }));
-
-    twoColRow.append(labelCell).append(inputCell);
-    targetDiv.append(twoColRow);
-    return;
+.currency-dropdown {
+  width: 90px;
 }
