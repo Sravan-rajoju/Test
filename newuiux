@@ -1,191 +1,113 @@
-const isTwoColumnField = specialTwoColumnFields.includes($input.attr('id')) || specialTwoColumnFields.includes($input.attr('name'));
+// === UPDATED CONFIGURATION USING CLASS CHECK ===
 
-if (isTwoColumnField) {
-    var twoColRow = $('<div class="row-container two-column-row"></div>');
+$(document).ready(function () { $('div[id$="_div"]').each(function () { var targetDiv = $(this); var rows = targetDiv.find('tr');
 
-    var labelCell = $('<div class="label-cell"></div>').append($label);
-    var inputCell = $('<div class="input-cell"></div>');
+targetDiv.find('#messageDisplay').remove();
+var newRow = $('<div class="row-container"></div>');
+var count = 0;
 
-    // If it's a date field
-    if ($input.hasClass('DATE_M') || $input.hasClass('DATE_P') || $input.hasClass('DATE_O')) {
+rows.each(function () {
+  var $row = $(this);
+  var inputs = $row.find('input,radio, select, textarea, input[type="hidden"]');
+  var labels = $row.find('.FldLabel, .FldLabel.star span');
+  var buttons = $row.find('input[type="button"], button');
+
+  inputs.each(function (index) {
+    var $input = $(this);
+    var $label = $(labels[index]);
+
+    const inputName = $input.attr('name') || '';
+    const isTwoColumnField = $row.hasClass('two-col-align') || $input.hasClass('two-col-field');
+
+    if ($input.is('input[type="hidden"]')) {
+      targetDiv.append($input);
+      return;
+    }
+
+    if (isTwoColumnField) {
+      var twoColRow = $('<div class="row-container two-column-row"></div>');
+      var labelCell = $('<div class="label-cell"></div>').append($label);
+      var inputCell = $('<div class="input-cell"></div>');
+
+      if ($input.hasClass('DATE_M') || $input.hasClass('DATE_P') || $input.hasClass('DATE_O')) {
         $('#ICO_' + $input.attr('id')).remove();
-        $input.datepicker({
-            showOn: "focus",
-            dateFormat: 'dd/mm/yy'
-        });
+        $input.datepicker({ showOn: "focus", dateFormat: 'dd/mm/yy' });
 
         var calendarIcon = $('<svg>', {
-            width: "22",
-            height: "20",
-            viewBox: "0 0 22 20",
-            fill: "none",
-            class: "calendarbutton",
-            id: "ICO_" + $input.attr('id'),
-            title: "Pick a Date",
-            html: `<path d="M1.6665 7H20.3332M1.6665 7V15.8002 ..."/>`
+          width: "20",
+          height: "20",
+          viewBox: "0 0 22 20",
+          fill: "none",
+          class: "calendarbutton",
+          id: "ICO_" + $input.attr('id'),
+          title: "Pick a Date",
+          html: `<path d=\"M1.6665 7H20.3332M1.6665 7V15.8002...\"/>`
+        }).on('click', function () {
+          $input.focus();
         });
 
         var dateWrapper = $('<div class="date-wrapper"></div>');
         dateWrapper.append($input).append(calendarIcon);
-
-        calendarIcon.on('click', function () {
-            $input.focus();
-        });
-
         inputCell.append(dateWrapper);
-    } else {
+      } else if ($input.hasClass('AMT_P') || $input.hasClass('AMT_M')) {
+        var amtWrapper = $('<div class="amount-wrapper"></div>');
+        var currencyDropdown = $row.find('select').first();
+
+        currencyDropdown.addClass('currency-dropdown');
+        $input.addClass('amount-input');
+
+        amtWrapper.append(currencyDropdown).append($input);
+        inputCell.append(amtWrapper);
+      } else {
         $input.addClass('input-field');
         inputCell.append($input);
-    }
+      }
 
-    // Optional: add buttons if any
-    buttons.each(function () {
+      buttons.each(function () {
         inputCell.append($(this));
-    });
+      });
 
-    // Add message display
-    var messageDisplay = $('<div>', {
-        id: 'messageDisplay_' + $input.attr('name'),
+      var messageDisplay = $('<div>', {
+        id: 'messageDisplay_' + inputName,
         class: 'error-message',
         text: ''
+      });
+      inputCell.append(messageDisplay);
+
+      twoColRow.append(labelCell).append(inputCell);
+      targetDiv.append(twoColRow);
+      return;
+    }
+
+    // Default behavior for grouped layout
+    var fieldWrapper = $('<div class="field-wrapper"></div>').append($label);
+    $input.addClass('input-field');
+    fieldWrapper.append($input);
+
+    buttons.each(function () {
+      fieldWrapper.append($(this));
     });
-    inputCell.append(messageDisplay);
 
-    twoColRow.append(labelCell).append(inputCell);
-    targetDiv.append(twoColRow);
+    var messageDisplay = $('<div>', {
+      id: 'messageDisplay_' + inputName,
+      class: 'error-message',
+      text: ''
+    });
+    fieldWrapper.append(messageDisplay);
 
-    // Skip rest of logic
-    return;
+    newRow.append(fieldWrapper);
+    count++;
+    if (count === 3) {
+      targetDiv.append(newRow);
+      newRow = $('<div class="row-container"></div>');
+      count = 0;
+    }
+  });
+});
+
+if (newRow.children().length > 0) {
+  targetDiv.append(newRow);
 }
 
+}); });
 
-
-const specialTwoColumnFields = [
-    'UIN_NUM_FRGN',
-    'PARTI_FRGN_NAME',
-	'PARTI_FRGN_ADDRESS',
-	'NM_CONTY_JUDI',
-	'SEC_B_FRGN_ENTITY',
-	'SEC_B_DT_INCORP',
-	'SEC_B_LEI',
-	'SEC_B_ACTIVITY_CODE',
-	'SEC_B_ACC_YEAR',
-	'SEC_B_NAME',
-	'SEC_B_ADDRESS',
-	'TYPE_OF_SDS',
-	'ACTVTY_CODE',
-	'STAKE_SDS'
-    
-];
-
-
-
-
-<tr>
-								<td class="FldLabel">Indicate 13-digit Unique Identification Number by the Reserve Bank(if applicable)</td>
-								<td><input id="UIN_NUM_FRGN" class="INT_M" maxlength="16"  name="UIN_NUM_FRGN"   title="Indicate 13-digit Unique Identification Number by the Reserve Bank(if applicable)" ></input></td>
-								</tr>
-								
-								<tr>
-								<td class="FldLabel">Name</td>
-								<td><input id="PARTI_FRGN_NAME" class="CHAR_M" maxlength="16"  name="PARTI_FRGN_NAME"   title="Name" ></input></td>
-								</tr>
-								
-								<tr>
-								<td class="FldLabel">Address</td>
-								<td><input id="PARTI_FRGN_ADDRESS" class="CHAR_M" maxlength="16"  name="PARTI_FRGN_ADDRESS"   title="Address" ></input></td>
-								</tr>
-								
-								<tr>
-								<td class="FldLabel">Name of the country/ jurisdiction</td>
-								<td><input id="NM_CONTY_JUDI" class="CHAR_M" maxlength="16"  name="NM_CONTY_JUDI"   title="Name of the country/ jurisdiction" ></input></td>
-								</tr>
-								
-								<tr>
-								 <td class="FldLabel">"Whether the foreign entity is a start-up or has its core activity in strategic sector or is engaged in financial services"</td>
-								 <td><select name="SEC_B_FRGN_ENTITY" id="SEC_B_FRGN_ENTITY" title="Whether the foreign entity is a start-up or has its core activity in strategic sector or is engaged in financial services" class="CHAR_M" maxlength="3">
-								
-								<option value="1">Startup</option>
-								<option value="2">Strategic sector</option>
-								<option value="3">Financial Services</option>
-								<option value="4">Others</option>
-								<option value="" selected="">PLEASE SELECT</option>
-								</select></td>
-								</tr>
-								
-								
-								<tr>
-                                    <td class="FldLabel">Date of incorporation of the Foregin entity</td>
-                                    <td><input name="SEC_B_DT_INCORP" type="text" class="DATE_O" id="SEC_B_DT_INCORP" title="Date of incorporation of the Foregin entity" size="24" maxlength="8"></td>
-                                </tr>
-								
-								<tr>
-								<td class="FldLabel">Legal Entity Identifier (LEI) of the foreign entity</td>
-								<td><input id="SEC_B_LEI" class="CHAR_M" maxlength="16"  name="SEC_B_LEI"   title="Legal Entity Identifier (LEI) of the foreign entity" ></input></td>
-								</tr>
-								
-								<tr>
-								<td class="FldLabel">E-mail ID of the foreign entity</td>
-								<td><input id="SEC_B_LEI" class="CHAR_M" maxlength="16"  name="SEC_B_LEI"   title="E-mail ID of the foreign entity" ></input></td>
-								</tr>
-								
-								<tr>
-								<td class="FldLabel">Activity code of the foreign entity</td>
-								<td><input id="SEC_B_ACTIVITY_CODE" class="CHAR_M" maxlength="16"  name="SEC_B_ACTIVITY_CODE"   title="Activity code of the foreign entity" ></input></td>
-								</tr>
-								
-								
-								
-								<tr>
-								 <td class="FldLabel">Accounting year followed by the foreign entity</td>
-								 <td><select name="SEC_B_ACC_YEAR" id="SEC_B_ACC_YEAR" title="Accounting year followed by the foreign entity" class="CHAR_M" maxlength="3">
-								
-								<option value="1">January to December</option>
-								<option value="2">April to March</option>
-								<option value="" selected="">PLEASE SELECT</option>
-								</select></td>
-								</tr>
-								
-								
-								<tr>
-								<td class="FldLabel">Name,level and country /jurisdiction of SDS</td>
-								<td><input id="SEC_B_NAME" class="CHAR_O" maxlength="16"  name="SEC_B_NAME"   title="Name,level and country /jurisdiction of SDS" ></input></td>
-								</tr>
-								
-								<tr>
-								<td class="FldLabel">Name,level and country /jurisdiction of parent SDS/foreign entity</td>
-								<td><input id="SEC_B_ADDRESS" class="CHAR_M" maxlength="16"  name="SEC_B_ADDRESS"   title="Name,level and country /jurisdiction of parent SDS/foreign entity" ></input></td>
-								</tr>
-								
-								<tr>
-								<td class="FldLabel">Legal Entity Identifier(LEI) of the SDS</td>
-								<td><input id="LEG_ENTY_SDS" class="CHAR_M" maxlength="16"  name="LEG_ENTY_SDS"   title="Legal Entity Identifier(LEI) of the SDS" ></input></td>
-								</tr>
-								
-								
-								
-								<tr>
-								 <td class="FldLabel">Type of SDS</td>
-								 <td><select name="TYPE_OF_SDS" id="TYPE_OF_SDS" title="Type of SDS" class="CHAR_M" maxlength="3">
-								
-								<option value="1">SPV</option>
-								<option value="2">Holding company</option>
-								<option value="3">Operating</option>
-								<option value="3">Operating cum holding</option>
-								<option value="" selected="">PLEASE SELECT</option>
-								</select></td>
-								</tr>
-								
-								
-								<tr>
-								<td class="FldLabel">Activity code of SDS as per 1987 and 2008 NIC code</td>
-								<td><input id="ACTVTY_CODE" class="CHAR_M" maxlength="16"  name="ACTVTY_CODE"   title="Activity code of SDS as per 1987 and 2008 NIC code" ></input></td>
-								</tr>
-								
-								<tr>
-								<td class="FldLabel">% stake held by the parent in the SDS</td>
-								<td><input id="STAKE_SDS" class="AMT_M" maxlength="16"  name="STAKE_SDS"   title="% stake held by the parent in the SDS" ></input></td>
-								</tr>
-								
-					
-				
