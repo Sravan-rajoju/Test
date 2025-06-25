@@ -66,3 +66,34 @@ if ($row.hasClass('four-col-layout')) {
     padding: 6px 8px;
     box-sizing: border-box;
 }
+
+
+
+
+
+.row-container.four-column-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.field-wrapper.four-col-field {
+    flex: 1 1 23%; /* 4 columns */
+    display: flex;
+    flex-direction: column;
+}
+
+.field-wrapper.four-col-field .FldLabel {
+    font-weight: 500;
+    margin-bottom: 4px;
+    white-space: normal;
+}
+
+.field-wrapper.four-col-field input,
+.field-wrapper.four-col-field select,
+.field-wrapper.four-col-field textarea {
+    width: 100%;
+    padding: 6px 8px;
+    box-sizing: border-box;
+}
