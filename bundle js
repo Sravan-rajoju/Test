@@ -1,129 +1,3 @@
-<tr class="four-col-layout">
-    <td class="FldLabel">Label 1</td>
-    <td><input id="FIELD1" name="FIELD1" /></td>
-    <td class="FldLabel">Label 2</td>
-    <td><input id="FIELD2" name="FIELD2" /></td>
-    <td class="FldLabel">Label 3</td>
-    <td><input id="FIELD3" name="FIELD3" /></td>
-    <td class="FldLabel">Label 4</td>
-    <td><input id="FIELD4" name="FIELD4" /></td>
-</tr>
-
-
-
-
-
-
-if ($row.hasClass('four-col-layout')) {
-    const fourColRow = $('<div class="row-container four-column-row"></div>');
-
-    const cells = $row.find('td');
-    for (let i = 0; i < cells.length; i += 2) {
-        const $label = $(cells[i]);
-        const $inputCell = $(cells[i + 1]);
-        const $input = $inputCell.find('input, select, textarea');
-
-        if ($input.length === 0) continue;
-
-        const wrapper = $('<div class="field-wrapper four-col-field"></div>');
-        wrapper.append($label.clone());
-        wrapper.append($input.clone());
-
-        fourColRow.append(wrapper);
-    }
-
-    targetDiv.append(fourColRow);
-    return; // Skip further processing of this row
-}
-
-
-
-
-
-.row-container.four-column-row {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    margin: 10px 0;
-    gap: 10px;
-}
-
-.field-wrapper.four-col-field {
-    flex: 1 1 22%;
-    display: flex;
-    flex-direction: column;
-}
-
-.field-wrapper.four-col-field .FldLabel {
-    font-weight: bold;
-    margin-bottom: 4px;
-}
-
-.field-wrapper.four-col-field input,
-.field-wrapper.four-col-field select,
-.field-wrapper.four-col-field textarea {
-    width: 100%;
-    padding: 6px 8px;
-    box-sizing: border-box;
-}
-
-
-
-
-
-.row-container.four-column-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 12px;
-}
-
-.field-wrapper.four-col-field {
-    flex: 1 1 23%; /* 4 columns */
-    display: flex;
-    flex-direction: column;
-}
-
-.field-wrapper.four-col-field .FldLabel {
-    font-weight: 500;
-    margin-bottom: 4px;
-    white-space: normal;
-}
-
-.field-wrapper.four-col-field input,
-.field-wrapper.four-col-field select,
-.field-wrapper.four-col-field textarea {
-    width: 100%;
-    padding: 6px 8px;
-    box-sizing: border-box;
-}
-
-
-
-
-
-if ($row.hasClass('four-col-layout')) {
-    const fourColRow = $('<div class="row-container four-column-row"></div>');
-    const cells = $row.find('td');
-
-    for (let i = 0; i < cells.length; i += 2) {
-        const $label = $(cells[i]).clone();
-        const $input = $(cells[i + 1]).find('input, select, textarea').first().clone();
-
-        const wrapper = $('<div class="field-wrapper four-col-field"></div>');
-        wrapper.append($label);
-        wrapper.append($input);
-
-        fourColRow.append(wrapper);
-    }
-
-    targetDiv.append(fourColRow);
-    return; // Skip further processing for this row
-}
-
-
-
-
 if ($row.hasClass('four-field-row')) {
     const fourFieldContainer = $('<div class="row-container four-fields-layout"></div>');
     const cells = $row.find('td');
@@ -137,3 +11,10 @@ if ($row.hasClass('four-field-row')) {
 
         input.addClass('input-field'); // optional styling
         fieldWrapper.append(labelElem).append(input);
+
+        fourFieldContainer.append(fieldWrapper);
+    }
+
+    targetDiv.append(fourFieldContainer);
+    return; // Skip further processing for this row
+}
