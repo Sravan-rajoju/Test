@@ -1,17 +1,50 @@
 <tr class="four-field-inline-row">
-	<td class="FldLabel" id="TEST1" style="height:50px"><h3>i.Person Resident in India</h3></td>
-	<td><input name="" type="text"  id="" title=""   style="display:none;height:1px"></td>			
+  <td><h3>Label</h3></td>
+  <td><input style="display:none"></td>
 </tr>
-								
-<tr class="four-field-inline-row">
-	<td class="FldLabel" id="TEST2" style="height:50px"><h3>% Stake</h3></td>
-	<td><input name="" type="text"  id="" title=""   style="display:none;height:1px"></td>			
-</tr>
-<tr class="four-field-inline-row">
-	<td class="FldLabel" id="TEST3" style="height:50px"><h3>ii.Foregin Partner(s)</h3></td>
-	<td><input name="" type="text"  id="" title=""   style="display:none;height:1px"></td>			
-</tr>
-<tr class="four-field-inline-row">
-	<td class="FldLabel" id="TEST4" style="height:50px"><h3>% Stake</h3></td>
-	<td><input name="" type="text"  id="" title=""   style="display:none;height:1px"></td>			
-</tr>
+
+
+const headerRowFields = targetDiv.find('tr.four-field-inline-row');
+
+if (headerRowFields.length >= 1) {
+    const inlineRow = $('<div class="row-container four-heading-line"></div>');
+
+    headerRowFields.each(function () {
+        const $row = $(this);
+        const labelText = $row.find('h3').text().trim();
+
+        const fieldWrapper = $('<div class="inline-header-block"></div>');
+        const labelElem = $('<h3 class="inline-header"></h3>').text(labelText);
+
+        fieldWrapper.append(labelElem);
+        inlineRow.append(fieldWrapper);
+
+        $row.remove(); // Remove original <tr> to avoid duplication
+    });
+
+    targetDiv.append(inlineRow);
+}
+
+
+
+
+.row-container.four-heading-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 20px 0;
+    flex-wrap: nowrap;
+}
+
+.inline-header-block {
+    flex: 1 1 22%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.inline-header {
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: center;
+}
