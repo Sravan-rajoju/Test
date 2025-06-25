@@ -57,3 +57,24 @@ if (isTwoColumnField) {
     // Skip rest of logic
     return;
 }
+
+
+
+
+.two-column-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.label-cell {
+    flex: 0 0 35%;
+    font-weight: bold;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.input-cell {
+    flex: 1;
+}
