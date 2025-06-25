@@ -60,3 +60,105 @@ if (isFullWidth) {
 
     return; // Skip rest of the input loop
 }
+
+
+
+
+
+New 
+
+
+const isTwoColumnField = specialTwoColumnFields.includes($input.attr('id')) || specialTwoColumnFields.includes($input.attr('name'));
+
+if (isTwoColumnField) {
+    var twoColRow = $('<div class="row-container two-column-row"></div>');
+
+    var labelCell = $('<div class="label-cell"></div>').append($label);
+    var inputCell = $('<div class="input-cell"></div>');
+
+    // If it's a date field
+    if ($input.hasClass('DATE_M') || $input.hasClass('DATE_P') || $input.hasClass('DATE_O')) {
+        $('#ICO_' + $input.attr('id')).remove();
+        $input.datepicker({
+            showOn: "focus",
+            dateFormat: 'dd/mm/yy'
+        });
+
+        var calendarIcon = $('<svg>', {
+            width: "22",
+            height: "20",
+            viewBox: "0 0 22 20",
+            fill: "none",
+            class: "calendarbutton",
+            id: "ICO_" + $input.attr('id'),
+            title: "Pick a Date",
+            html: `<path d="M1.6665 7H20.3332M1.6665 7V15.8002 ..."/>`
+        });
+
+        var dateWrapper = $('<div class="date-wrapper"></div>');
+        dateWrapper.append($input).append(calendarIcon);
+
+        calendarIcon.on('click', function () {
+            $input.focus();
+        });
+
+        inputCell.append(dateWrapper);
+    } else {
+        $input.addClass('input-field');
+        inputCell.append($input);
+    }
+
+    // Optional: add buttons if any
+    buttons.each(function () {
+        inputCell.append($(this));
+    });
+
+    // Add message display
+    var messageDisplay = $('<div>', {
+        id: 'messageDisplay_' + $input.attr('name'),
+        class: 'error-message',
+        text: ''
+    });
+    inputCell.append(messageDisplay);
+
+    twoColRow.append(labelCell).append(inputCell);
+    targetDiv.append(twoColRow);
+
+    // Skip rest of logic
+    return;
+}
+
+
+// Fields to be displayed in 2-column layout (label left, input right)
+const specialTwoColumnFields = [
+    'ENTITY_NAME',
+    'ENTITY_ADDRESS',
+    'ENTITY_COUNTRY',
+    'ENTITY_STARTUP_STATUS',
+    'ENTITY_DATE',
+    'ENTITY_LEI',
+    'ENTITY_EMAIL',
+    'ENTITY_ACTIVITY_CODE',
+    'ENTITY_ACCOUNT_YEAR'
+];
+
+
+
+
+.two-column-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.label-cell {
+    flex: 0 0 35%;
+    font-weight: bold;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.input-cell {
+    flex: 1;
+}
