@@ -7,8 +7,6 @@ if (isTwoColumnField) {
         marginBottom: '12px',
         gap: '12px'
     });
-	
-	//width: 100%;border-left-width: 1px;margin-left: 25px;
 
     var labelCell = $('<div class="label-cell"></div>').css({
         width: '30%',
@@ -19,13 +17,30 @@ if (isTwoColumnField) {
         width: '70%'
     });
 
-    if ($input.hasClass('DATE_A') || $input.hasClass('DATE_P') || $input.hasClass('DATE_O')) {
+    // === Common styling to apply ===
+    const applyInputStyles = function (input) {
+        input.addClass('input-field').css({
+            width: '100%',
+            borderLeft: '1px solid #ccc',
+            marginLeft: '25px',
+            padding: '6px 8px',
+            fontSize: '14px',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            boxSizing: 'border-box',
+            height: '32px'
+        });
+    };
+
+    // === Date fields ===
+    if ($input.hasClass('DATE_M') || $input.hasClass('DATE_P') || $input.hasClass('DATE_O')) {
         $('#ICO_' + $input.attr('id')).remove();
 
         $input.datepicker({
             showOn: "focus",
             dateFormat: 'dd/mm/yy'
-        }).addClass('input-field');
+        });
+        applyInputStyles($input);
 
         var calendarIcon = $('<svg>', {
             width: "20",
@@ -49,7 +64,11 @@ if (isTwoColumnField) {
 
         dateWrapper.append($input).append(calendarIcon);
         inputCell.append(dateWrapper);
-    } else if ($input.hasClass('AMT_M') || $input.hasClass('AMT_P')) {
+    }
+
+    // === Amount + Currency dropdown fields ===
+    else if ($input.hasClass('AMT_M') || $input.hasClass('AMT_P')) {
+        applyInputStyles($input);
         var amtWrapper = $('<div class="amount-wrapper"></div>').css({
             display: 'flex',
             alignItems: 'center',
@@ -59,42 +78,23 @@ if (isTwoColumnField) {
 
         var currencyDropdown = $row.find('select').first();
         currencyDropdown.addClass('currency-dropdown');
-        $input.addClass('input-field');
 
         amtWrapper.append(currencyDropdown).append($input);
         inputCell.append(amtWrapper);
-    }else if ($input.hasClass('INT_M') || $input.hasClass('INT_O')|| $input.hasClass('INT_P')) {
-    $input.addClass('input-field');
+    }
 
-    // Apply default styles for INT_M inputs
-    $input.css({
-        width: '100%',
-        borderLeftWidth: '1px',
-        borderLeftStyle: 'solid',
-        borderLeftColor: '#ccc',
-        marginLeft: '25px',
-        padding: '6px 8px',
-        fontSize: '14px',
-        border: '1px solid #ccc',
-        borderRadius: '4px',
-        boxSizing: 'border-box',
-        height: '32px'
-    });
-
-    inputCell.append($input);
-}
-	else {
-        $input.addClass('input-field').css({
-            width: '100%'
-        });
+    // === All other fields (INT, CHAR, etc.) ===
+    else {
+        applyInputStyles($input);
         inputCell.append($input);
     }
 
-    // Optional: Append buttons
+    // === Optional: Append buttons ===
     buttons.each(function () {
         inputCell.append($(this));
     });
 
+    // === Append message display ===
     inputCell.append($('<div>', {
         id: 'messageDisplay_' + ($input.attr('name') || ''),
         class: 'error-message',
