@@ -105,3 +105,38 @@ if (isTwoColumnField) {
     targetDiv.append(twoColRow);
     return;
 }
+
+
+
+
+
+
+
+
+const applyInputStyles = function (input) {
+    input.addClass('input-field').css({
+        width: '100%',
+        minWidth: '200px',
+        height: '36px',              // Make height consistent
+        padding: '6px 10px',
+        fontSize: '14px',
+        border: '1px solid #ccc',
+        borderRadius: '6px',         // Rounded corners restored
+        boxSizing: 'border-box',
+        marginLeft: '25px'
+    });
+};
+
+
+
+
+
+
+$('.currency-dropdown').css({
+    height: '36px',
+    borderRadius: '6px',
+    padding: '6px 10px',
+    fontSize: '14px',
+    border: '1px solid #ccc',
+    boxSizing: 'border-box'
+});
