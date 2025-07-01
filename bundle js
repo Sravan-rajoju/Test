@@ -157,3 +157,31 @@ if (isTwoColumnField) {
     targetDiv.append(twoColRow);
     return;
 }
+
+
+
+
+
+
+
+
+else if ($input.hasClass('INT_M')) {
+    $input.addClass('input-field');
+
+    // Apply default styles for INT_M inputs
+    $input.css({
+        width: '100%',
+        borderLeftWidth: '1px',
+        borderLeftStyle: 'solid',
+        borderLeftColor: '#ccc',
+        marginLeft: '25px',
+        padding: '6px 8px',
+        fontSize: '14px',
+        border: '1px solid #ccc',
+        borderRadius: '4px',
+        boxSizing: 'border-box',
+        height: '32px'
+    });
+
+    inputCell.append($input);
+}
