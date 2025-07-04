@@ -1,0 +1,73 @@
+To validate an email address based on your specific conditions using JavaScript, you can use the following code snippet with a regular expression and logic:
+
+✅ JavaScript Email Validation Script
+
+function validateEmail(email) {
+    // Check for spaces
+    if (email.includes(" ")) {
+        alert("Please enter a valid email address.");
+        return false;
+    }
+
+    // Regex pattern for validation
+    const emailPattern = /^[A-Za-z0-9]+([.+-]?[A-Za-z0-9]+)*@[A-Za-z0-9-]+\.(com|net|co\.in|gov\.in)$/;
+
+    // Check format
+    if (!emailPattern.test(email)) {
+        alert("Please enter a valid email address.");
+        return false;
+    }
+
+    // Check for start/end special character before @
+    const [localPart] = email.split('@');
+    const firstChar = localPart.charAt(0);
+    const lastChar = localPart.charAt(localPart.length - 1);
+
+    if (/[^A-Za-z0-9]/.test(firstChar) || /[^A-Za-z0-9]/.test(lastChar)) {
+        alert("Please enter a valid email address.");
+        return false;
+    }
+
+    return true;
+}
+
+✅ Example Usage
+
+<input type="text" id="email" placeholder="Enter your email">
+<button onclick="checkEmail()">Validate</button>
+
+<script>
+    function checkEmail() {
+        const email = document.getElementById('email').value;
+        validateEmail(email);
+    }
+</script>
+
+
+---
+
+📌 Explanation of Rules Implemented:
+
+1. Must contain '@' — enforced by regex.
+
+
+2. No start or end special characters before @ — checked separately.
+
+
+3. Only allowed domains — validated in regex: .com, .net, .co.in, .gov.in.
+
+
+4. No spaces — email.includes(" ") check.
+
+
+5. Allowed characters before @ — [A-Za-z0-9.+-].
+
+
+6. Start and end cannot be special characters — separate condition.
+
+
+7. Alert message — displayed for any invalid case.
+
+
+
+Let me know if you'd like the same validation in another language (like Python or Java) or inside a form.
