@@ -18,3 +18,27 @@ TFCEAPP\base_domain\PARAM\Default\SCRN\INIS_Enq_IssueLC_OneStep.xml
 
 
 note : restart is required
+
+
+
+
+Dear Sir,
+
+Kindly provide approval for Production issue in Inland LC close transactions 
+score request : 23808323
+
+please find the listed components and also provide permission to run the Alter script in CE DB
+
+ALTER TABLE CETRX.INIS_MASTER ADD CLOSE_FLG VARCHAR2(35);
+COMMIT;
+
+CE components : 
+
+TFCEAPP\base_domain\PARAM\Default\CATA\cata_C10092100000.xml
+TFCEAPP\base_domain\PARAM\Default\LAYOUT\CETRX.INIS_MASTER.xml
+TFCEAPP\base_domain\PARAM\Default\MSG\stp_INIS_BKTS_INIS_Close_EE2CE.xml
+TFCEAPP\base_domain\PARAM\Default\SCRN\INIS_Enq_IssueLC_OneStep.xml
+
+
+
+note : restart is required
