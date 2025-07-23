@@ -177,3 +177,50 @@ button should be =Submit APR
         </button>
     </td>
 </#if>
+
+
+
+
+
+
+
+
+
+
+<#if column.name  == "STATUS"> 
+								<#assign digiStat = "${column.divValue}"/> 
+							 </#if>
+							 
+							<a  onClick="EditselectedCrefNo('select'+${record.rowNum})">
+							<#assign deleteType = "${column.value}"/>
+							
+							<#attempt>
+							<#if column.divValue = "A" && digiStat == "1" > Pending With Bank
+							<#elseif column.divValue = "A" && digiStat == "2" > Pending With Customer Checker
+							<#elseif column.divValue = "A" && digiStat == "9" > Pending With Bank
+							<#elseif column.divValue = "A" && digiStat == "10" > Pending With Customer Checker
+							<#elseif column.divValue = "A" && digiStat == "5" > Pending With Bank
+							<#elseif column.divValue = "A" && digiStat == "6" > Pending With Customer Checker
+							<#elseif column.divValue = "A" && digiStat == "7" > Pending With Customer Checker
+						
+							<#elseif column.divValue = "A" && digiStat == "15" > Pending With Bank
+							<#elseif column.divValue = "A" && digiStat == "16" > Pending With Customer Checker
+							<#elseif column.divValue = "A" && digiStat == "19" > Pending With Bank
+							<#elseif column.divValue = "A" && digiStat == "20" > Pending With Customer Checker
+							<#elseif column.divValue = "A" && digiStat == "21" > Pending With Customer Checker
+							
+							<#elseif column.divValue = "P" > Pending with Customer Checker
+							
+							<#elseif column.divValue = "R"> Rejected by Customer Checker
+							<#elseif column.divValue = "J"> Rejected by Customer Checker
+							<#elseif column.divValue = "S"> Pending with Bank
+							<#elseif column.divValue = "Z"> Saved as Draft	
+							<#elseif column.divValue = "T"> Pending with Customer Checker	
+							
+							
+								
+							<#else> ${column.value}						
+							</#if>
+							<#recover></#attempt>
+							</a></div>
+							</td>	
