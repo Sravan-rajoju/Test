@@ -1,0 +1,138 @@
+<table cellspacing='0' ${tbClass01} id="id_getTranCata_ODIFDIREQ" style="display:none;">
+	<tr ${trClass01}>
+		<td>
+			<table ${tbClass02} id="id_getTranCata_ODIFDIREQ_table">
+
+				<tr ${trClass01} id="showLineFlag">
+						<td bgcolor="#666666" colspan="100">
+								<img src="images/trans.gif" width=1 height=1 border=0>
+						</td>
+				</tr>
+
+				<tr ${trClass02}>
+					<#if cataTitle.hasSelectCol && !cataTitle.isMulti && !cataTitle.hasResult>
+					<td id="selectValueColumn">
+						<p id="ColumnradioId">&nbsp;&nbsp;&nbsp;Select&nbsp;&nbsp;&nbsp;</p>
+					</td>
+					</#if>
+
+					<#list cataTitle.title as title>
+						<#list title as col>
+
+						<#if col.isLineFlag>
+
+					<td bgcolor="#FFFFFF" id="showLineFlag"></td>
+
+						<#else>
+ 						<#if col.isNoEventTitle>
+					<td ${tdClass01}>
+						<font>
+						<p>${col.titleValue}</p>
+						</font>
+					</td>
+
+ 						<#elseif cataTitle.isMulti || cataTitle.hasResult>
+ 					<td ${tdClass01}><p>${col.titleValue}</p></td>
+                        <#else>
+
+					<td ${tdClass01} onclick="searchAuto('${col.onclickParam}')" onmouseover="this.style.cursor='hand'" style="cursor:pointer; text-align: left;">
+						<font>
+							<p>${col.titleValue}&nbsp;&nbsp;<img src="/CEWeb/Images/icons/sort_both.png" id="${col.onclickParam}_imgSort" href="#" style="vertical-align: sub;"/></p>
+						</font>
+					</td>
+ 						</#if>
+					</#if>
+					</#list>
+					</#list>
+					<#if cataTitle.hasSelectCol && !cataTitle.isMulti && !cataTitle.hasResult>
+						<td style="display: none;" id="actionColumnId" class="columnName">
+							<p id="ColumnradioId">&nbsp;&nbsp;&nbsp;Action&nbsp;&nbsp;&nbsp;</p>
+						</td>
+					</#if>
+					<#if cataTitle.hasResult>
+					<td ${tdClass01}>
+						<p>&nbsp;&nbsp;&nbsp;Result&nbsp;&nbsp;&nbsp;</p>
+					</td>
+					</#if>
+
+				</tr>
+
+				<tr ${trClass01} id="showLineFlag">
+					<td bgcolor="#666666" colspan="100">
+						<img src="images/trans.gif" width=1 height=1 border=0>
+					</td>
+				</tr>
+
+				<#list recordList as record>
+				<tr ${trClass01}>
+					<#if record.hasCheckBox && !record.isMulti && !record.hasResult>
+					<td id="selectRadioColumn" <#if record.singleRow> ${tdClass02}
+					<#else> ${tdClass03}</#if> align="center" >
+					
+					
+						
+					<label class="container" id="RadioContainerId">
+					<input type="radio" class name="_Sel_CheckBox" value="${record.rowNum}" onClick="_displ_sele(this);" id="select${record.rowNum}" >
+					<span class="checkmark"></span> 
+					</label>
+					</td>
+					</#if>
+
+					<#list record.content as content>
+						<#list content as column>
+						<#if column.notHideColumn>
+						<td  <#if record.singleRow> ${tdClass02}
+						<#else> ${tdClass03} </#if> >
+							<div id="${column.rowId}"
+							<#assign colType = "${column.dataType}"/>
+							 <#if colType = INTEGER || colType = DECIMAL>
+							 style="text-align: right; width: 80% !important;"
+							 <#else>
+							 style="text-align: left;"
+							 </#if>
+							 ${divClass01} ${column.event} value="${column.divValue}">
+
+						<a  onClick="showLCValues('select'+${record.rowNum})">${column.value}</a></div>
+						</td>	
+
+						<#else>
+						<td  <#if record.singleRow> ${tdClass04}
+						<#else> ${tdClass05} </#if> >
+							<div id="${column.rowId}" value="${column.divValue}"/>
+						</td>
+						</#if>
+						</#list>
+						</#list>
+							<#if cataTitle.hasSelectCol && !cataTitle.isMulti && !cataTitle.hasResult>
+							<td style="display: none; border-bottom: 1px solid #ddd;" id="amendButton_${record.rowNum}" class="amendButtonStyle">
+								<button type="button" name="amendBtn" id="amendButton" onClick="EditselectedCrefNo('select'+${record.rowNum})" 
+								style="width:100px;height:25px;vertical-align: 
+								middle;background-color:white;color:rgb(0,169,224);border: 1px solid rgb(0,169,224);font-size:15px;
+								font-family: Roboto-regular; border-radius: 7px 7px 7px 7px;
+    							margin-right: 18px; cursor: pointer;">Request</button>
+							</td>
+						</#if>
+
+						<#if record.hasResult>
+						    <td <#if record.singleRow> ${tdClass02}
+							<#else> ${tdClass03}</#if> align="center" >
+                                <div id="${record.rowNum}" value="${record.result}">${record.result}</div>
+							</td>
+						</#if>
+					    <#if record.isMulti>
+							<td <#if record.singleRow> ${tdClass02}
+							<#else> ${tdClass03}</#if> align="center" >
+								<input type="button" ${buttonClass01} name="VIEW_BUTTON" value="VEIW" style="cursor: pointer;"  onClick="VIEW_REL_PAGE('${record.rowNum}')">
+							</td>
+							<td <#if record.singleRow> ${tdClass02}
+							<#else> ${tdClass03}</#if> align="center" >
+								<input type="button" ${buttonClass01} name="REMOVE_BUTTON" value="REMOVE" style="cursor: pointer;" onClick="Remove_Row(this,'${record.rowNum}')">
+							</td>
+						</#if>
+
+				</tr>
+				</#list>
+			</table>
+		</td>
+	</tr>
+</table>
