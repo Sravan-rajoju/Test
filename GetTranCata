@@ -136,3 +136,15 @@
 		</td>
 	</tr>
 </table>
+
+
+
+
+FUNSHORTNAME == DRTI_POST_INVT  
+button should be = Change Details
+
+FUNSHORTNAME == DRTI_EVD_INVT 
+button should be =Mark Evidence
+
+FUNSHORTNAME == DRTI_Performance 
+button should be =Submit APR
