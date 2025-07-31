@@ -1,1 +1,3 @@
-
+We noticed that the LoadTemplateData servlet may not be correctly escaping the output as HTML, which could potentially allow HTML content to be injected.
+To mitigate this, we suggest implementing HTML escaping for both input and output in the LoadTemplateData servlet. If validation against specific characters or tags (e.g., <script>, <html>) is required, it would also be appropriate to include it in this servlet.
+That said, since the LoadTemplateData servlet is not developed by our team, we would kindly recommend that the project team review and consider making the necessary updates.
