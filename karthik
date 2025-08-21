@@ -1,4 +1,4 @@
-function updatePurposeCodeDesc(catTradeRelValue, preselectedValue = '') {
+7function updatePurposeCodeDesc(catTradeRelValue, preselectedValue = '') {
             const container = document.getElementById('purposeCodeContainer'); // Container div for dynamic fields
            // container.innerHTML = ''; // Clear the container
 		           container.textContent = '';
@@ -218,3 +218,104 @@ function updatePurposeCodeDesc(catTradeRelValue, preselectedValue = '') {
 			}
 			
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Define the options map once (outside the function)
+const optionsMap = {
+    '4': [
+        { value: '', text: 'Please select' },
+        { value: 'S0017', text: 'Acquisition of non-produced non-financial assets (Purchase of intangible assets like patents, copyrights, trademarks etc., land acquired by government, use of natural resources)' },
+        { value: 'S0019', text: 'Acquisition of non-produced non-financial assets (Purchase of intangible assets like patents, copyrights, trademarks etc., use of natural resources)   non-Government ' },
+        { value: 'S0026', text: 'Capital transfers (Guarantees payments, Investment Grand given by the government/international organisation, exceptionally large Non-life insurance claims)   Government ' },
+        { value: 'S0027', text: 'Capital transfers (Guarantees payments, Investment Grand given by the Non-government, exceptionally large Non-life insurance claims)   Non-Government ' },
+        { value: 'S0099', text: 'Other capital payments not included elsewhere' },
+    ],
+    '1': [{ value: 'S0701', text: 'S0701' }],
+    '2': [{ value: 'S1002', text: 'S1002' }],
+    '3': [{ value: 'S1501', text: 'S1501' }],
+    // ... keep rest of your mappings here ...
+    '19': [{ value: 'S1701', text: 'Payments for processing of goods ' }]
+};
+
+function updatePurposeCodeDesc(catTradeRelValue, preselectedValue = '') {
+    const container = document.getElementById('purposeCodeContainer'); 
+
+    // ✅ Safety check
+    if (!container) {
+        console.warn("Container not found: purposeCodeContainer");
+        return;
+    }
+
+    // Clear previous content
+    container.innerHTML = '';
+
+    if (catTradeRelValue === '20') {
+        // Free text input
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.name = 'PURPOSE_CODE_DESC';
+        input.id = 'PURPOSE_CODE_DESC';
+        input.className = 'CHAR_M';
+        input.placeholder = 'Enter your text here';
+        if (preselectedValue) {
+            input.value = preselectedValue;
+        }
+        container.appendChild(input);
+    } else {
+        // Dropdown
+        const dropdown = document.createElement('select');
+        dropdown.id = 'PURPOSE_CODE_DESC';
+        dropdown.name = 'PURPOSE_CODE_DESC';
+        dropdown.className = 'CHAR_M';
+
+        const options = optionsMap[catTradeRelValue] || [{ value: '', text: 'Please select' }];
+        options.forEach(optionData => {
+            const option = document.createElement('option');
+            option.value = optionData.value;
+            option.textContent = optionData.text;
+            if (optionData.value === preselectedValue) {
+                option.selected = true;
+            }
+            dropdown.appendChild(option);
+        });
+
+        container.appendChild(dropdown);
+    }
+
+    // Trigger onchange if function exists
+    if (typeof PURPOSE_CODE_DESC_OnChange === "function") {
+        PURPOSE_CODE_DESC_OnChange();
+    }
+
+    // Set MANDT_OBT safely
+    const purposeCodeEl = document.getElementById("PURPOSE_CODE");
+    const mandtObtEl = document.getElementById("MANDT_OBT");
+
+    if (purposeCodeEl && mandtObtEl) {
+        const specialCodes = [
+            "S0001","S0002","S0003","S0004","S0005","S0011","S0101","S0102","S0103","S0104","S0190","S0202","S0208","S0212","S0301","S0302","S0303","S0304","S0305","S0401","S0501","S0602","S1011","S1201","S1202","S1301","S1302","S1303","S1304","S1305","S1306","S1501","S1503"
+        ];
+
+        mandtObtEl.value = specialCodes.includes(purposeCodeEl.value) ? 2 : 1;
+    }
+}
+
+// ✅ Run only when DOM is ready
+window.addEventListener("DOMContentLoaded", () => {
+    // Example call
+    updatePurposeCodeDesc('4', '');
+});
