@@ -1,3 +1,220 @@
-We noticed that the LoadTemplateData servlet may not be correctly escaping the output as HTML, which could potentially allow HTML content to be injected.
-To mitigate this, we suggest implementing HTML escaping for both input and output in the LoadTemplateData servlet. If validation against specific characters or tags (e.g., <script>, <html>) is required, it would also be appropriate to include it in this servlet.
-That said, since the LoadTemplateData servlet is not developed by our team, we would kindly recommend that the project team review and consider making the necessary updates.
+function updatePurposeCodeDesc(catTradeRelValue, preselectedValue = '') {
+            const container = document.getElementById('purposeCodeContainer'); // Container div for dynamic fields
+           // container.innerHTML = ''; // Clear the container
+		           container.textContent = '';
+
+            if (catTradeRelValue === '20') {
+                // Text input for free text
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = 'PURPOSE_CODE_DESC';
+				input.id = 'PURPOSE_CODE_DESC';
+                input.className = 'CHAR_M';
+                input.placeholder = 'Enter your text here';
+                if (preselectedValue !== '') {
+                    input.value = preselectedValue;
+                }
+                container.appendChild(input);
+            } else {
+                // Dropdowns for different categories
+                const dropdown = document.createElement('select');
+                dropdown.id = 'PURPOSE_CODE_DESC';
+                dropdown.name = 'PURPOSE_CODE_DESC';
+                dropdown.className = 'CHAR_M';
+
+                // Options mapping for each category value
+                const optionsMap = {
+                    '4': [
+                        { value: '', text: 'Please select' },
+                        { value: 'S0017', text: 'Acquisition of non-produced non-financial assets (Purchase of intangible assets like patents, copyrights, trademarks etc., land acquired by government, use of natural resources)' },
+                        { value: 'S0019', text: 'Acquisition of non 	-produced non-financial assets (Purchase of intangible assets like patents, copyrights, trademarks etc., use of natural resources)   non-Government ' },
+                        { value: 'S0026', text: ' Capital transfers (Guarantees payments, Investment Grand given by the government/international organisation, exceptionally large Non-life insurance claims)   Government ' },
+                        { value: 'S0027', text: ' Capital transfers (Guarantees payments, Investment Grand given by the Non-government, exceptionally large Non-life insurance claims)   Non-Government ' },
+                        { value: 'S0099', text: ' Other capital payments not included elsewhere' },
+                    ],
+                    '1': [
+                        { value: 'S0701', text: 'S0701' }
+                    ],
+                    '2': [
+                        { value: 'S1002', text: 'S1002' }
+                    ],
+                    '3': [
+                        { value: 'S1501', text: 'S1501' }
+                    ],
+                    '5': [
+                        { value: '', text: 'Please select' },
+                        { value: 'S0003', text: 'Indian Direct investment abroad (in branches & wholly owned subsidiaries) in equity Shares' },
+                        { value: 'S0004', text: ' Indian Direct investment abroad (in subsidiaries and associates) in debt instruments' },
+                        { value: 'S0005', text: ' Indian investment abroad   in real estate ' },
+                        { value: 'S0006', text: ' Repatriation of Foreign Direct Investment made by overseas Investors in India   in equity shares ' },
+                        { value: 'S0007', text: ' Repatriation of Foreign Direct Investment in made by overseas Investors India   in debt instruments ' },
+                        { value: 'S0008', text: ' Repatriation of Foreign Direct Investment made by overseas Investors in India   in real estate ' },
+                    ],
+                    '6': [
+                        { value: '', text: 'Please select' },
+                        { value: 'S0001', text: ' Indian Portfolio investment abroad   in equity shares ' },
+                        { value: 'S0002', text: ' Indian Portfolio investment abroad   in debt instruments ' },
+                        { value: 'S0009', text: ' Repatriation of Foreign Portfolio Investment made by overseas Investors in India   in equity shares ' },
+                        { value: 'S0010', text: ' Repatriation of Foreign Portfolio Investment made by overseas Investors in India   in debt instruments ' },
+                    ],
+                    '7': [
+                        { value: '', text: 'Please select' },
+                        { value: 'S0011', text: 'Loans extended to non-Residents ' },
+                        { value: 'S0012', text: ' Repayment of long- & medium-term loans with original maturity above one year received from Non-Residents ' },
+                    ],
+                    '8': [
+                        { value: 'S0013', text: ' Repayment of short-term loans with original maturity up to one year received from Non-Residents ' },
+                    ],
+                    '9': [
+                        { value: '', text: 'Please select' },
+                        { value: 'S0201', text: ' Payments for surplus freight/passenger fare by foreign shipping companies operating in India ' },
+                        { value: 'S0202', text: ' Payment for operating expenses of Indian shipping companies operating abroad ' },
+                        { value: 'S0203', text: ' Freight on imports   Shipping companies ' },
+                        { value: 'S0204', text: ' Freight on exports   Shipping companies ' },
+                        { value: 'S0205', text: ' Operational leasing/Rental of Vessels (with crew)  Shipping companies ' },
+                        { value: 'S0206', text: ' Booking of passages abroad   Shipping companies ' },
+                        { value: 'S0207', text: ' Payments for surplus freight/passenger fare by foreign Airlines companies operating in India ' },
+                        { value: 'S0208', text: ' Operating expenses of Indian Airlines companies operating ' },
+                        { value: 'S0209', text: 'Freight on imports   Airlines companies ' },
+                        { value: 'S0210', text: ' Freight on exports   Airlines companies' },
+                        { value: 'S0211', text: ' Operational leasing / Rental of Vessels (with crew)   Airline companies ' },
+                        { value: 'S0212', text: ' Booking of passages abroad   Airlines companies ' },
+                        { value: 'S0214', text: ' Payments on account of stevedoring, demurrage, port handling charges etc.(Shipping companies) ' },
+                        { value: 'S0215', text: ' Payments on account of stevedoring, demurrage, port handling charges, etc.(Airlines companies) ' },
+                        { value: 'S0216', text: ' Payments for Passenger - Shipping companies ' },
+                        { value: 'S0217', text: 'Other payments by Shipping companies ' },
+                        { value: 'S0218', text: ' Payments for Passenger - Airlines companies ' },
+                        { value: 'S0219', text: ' Other Payments by Airlines companies ' },
+                        { value: 'S0220', text: ' Payments on account of freight under other modes of transport (Internal Waterways, Roadways, Railways, Pipeline transports and others) ' },
+                        { value: 'S0221', text: 'Payments on account of passenger fare under other modes of transport (Internal Waterways, Roadways, Railways, Pipeline transports and others) ' },
+						{ value: 'S0222', text: 'Postal & Courier services by Air ' },	
+						{ value: 'S0223', text: 'Postal & Courier services by Sea 	' },
+						{ value: 'S0224', text: 'Postal & Courier services by others' }	
+                    ],
+					 '10': [
+			{ value: '', text: 'Please select' },
+			{ value: 'S0501', text: 'Construction of projects abroad by Indian companies including import of goods at project site abroad ' },
+			{ value: 'S0502', text: ' cost of construction etc. of projects executed by foreign companies in India.' }
+    ],
+    '11': [
+			{ value: '', text: 'Please select' },
+			{ value: 'S0601', text: 'Life Insurance premium except term insurance ' },
+			{ value: 'S0602', text: '  Freight insurance   relating to import & export of goods' },
+			{ value: 'S0603', text: 'Other general insurance premium including reinsurance premium; and term life insurance premium ' },	
+			{ value: 'S0605', text: 'Auxiliary services including commission on insurance ' },	
+			{ value: 'S0607', text: 'Insurance claim Settlement of non-life insurance; and life insurance (only term insurance) ' },	
+			{ value: 'S0608', text: 'Life Insurance Claim Settlements ' },	
+			{ value: 'S0609', text: 'Standardised guarantee services ' },	
+			{ value: 'S0610', text: 'Premium for pension funds 	' },
+			{ value: 'S0611', text: 'Periodic pension entitlements e.g. monthly quarterly or yearly payments of pension amounts by Indian Pension Fund 	' },
+			{ value: 'S0612', text: 'Invoking of standardised guarantees ' }
+    ],
+    '12': [
+        { value: '', text: 'Please select' },
+			{ value: 'S0701', text: 'Financial intermediation, except investment banking - Bank charges, collection charges, LC charges etc. ' }, 
+			{ value: 'S0702', text: 'Investment banking   brokerage, under writing commission ' },	
+			{ value: 'S0703', text: 'Auxiliary services   charges on operation & regulatory fees, custodial services, depository services etc.' }
+    ],
+	
+	  '13': [
+            { value: '', text: 'Please select' },
+			{ value: 'S0801', text: 'Hardware consultancy/implementation' },	
+			{ value: 'S0802', text: 'Software consultancy / implementation' },	
+			{ value: 'S0803', text: 'Data base, data processing charges' }, 	
+			{ value: 'S0804', text: 'Repair and maintenance of computer and software ' },	
+			{ value: 'S0805', text: 'News agency services' }, 	
+			{ value: 'S0806', text: 'Other information services- Subscription to newspapers,' }, 	
+			{ value: 'S0807', text: 'Off-site softwar 	e imports' }, 	
+			{ value: 'S0808', text: 'Telecommunication services including electronic mail services and voice mail services ' },	
+			{ value: 'S0809', text: 'Satellite services including space shuttle and rockets etc.' }
+        ],
+        '14': [
+            { value: '', text: 'Please select' },
+			{ value: 'S0901', text: ' Franchises services ' },
+			{ value: 'S0902', text: ' Payment for use, through licensing arrangements, of produced originals or prototypes (such as manuscripts and films), patents, copyrights, trademarks and industrial processes etc.' },
+        ],
+        '15': [
+            { value: '', text: 'Please select' },
+			{ value: 'S1002', text: 'Trade related services   commission on exports / imports' }, 	
+			{ value: 'S1003', text: 'Operational leasing services (other than financial leasing) without operating crew, including charter hire- Airlines companies' }, 	
+			{ value: 'S1004', text: 'Legal services' }, 	
+			{ value: 'S1005', text: 'Accounting, auditing, book-keeping services' }, 	
+			{ value: 'S1006', text: 'Business and management consultancy and public relations' }, 	
+			{ value: 'S1007', text: 'Advertising, trade fair service' }, 	 	
+			{ value: 'S1008', text: 'Research & Development services' }, 	
+			{ value: 'S1009', text: 'Architectural services' }, 	
+			{ value: 'S1010', text: 'Agricultural services like protection against insects & disease, increasing of harvest yields, forestry services.' }, 	
+			{ value: 'S1011', text: 'Payments for maintenance of offices abroad' }, 	
+			{ value: 'S1013', text: 'Environmental Services' }, 	
+			{ value: 'S1014', text: 'Engineering Services' }, 	
+			{ value: 'S1015', text: 'Tax consulting services ' },	
+			{ value: 'S1016', text: 'Market research and public opinion polling service' }, 	
+			{ value: 'S1017', text: 'Publishing and printing services' }, 	
+			{ value: 'S1018', text: 'Mining services like on site processing services analysis of' }, 	
+			{ value: 'S1020', text: 'Commission agent services' }, 	 	 	
+			{ value: 'S1021', text: 'Wholesale and retailing trade services.' }, 	
+			{ value: 'S1022', text: 'Operational leasing services (other than financial leasing) without operating crew, including charter hire- Shipping ' },	
+			{ value: 'S1023', text: 'Other Technical Services including scientific/space services.' }, 	
+			{ value: 'S1099', text: 'Other services not included elsewhere ' }
+        ],'16': [
+        { value: '', text: 'Please select' },
+			{ value: 'S1101', text: 'Audio-visual and related services like Motion picture and video tape production, distribution, and projection services.' }, 	
+			{ value: 'S1103', text: 'Radio and television production, distribution, and transmission services' }, 	
+			{ value: 'S1104', text: 'Entertainment services' }, 	
+			{ value: 'S1105', text: 'Museums, library and archival services' }, 	
+			{ value: 'S1106', text: 'Recreation and sporting activities services ' },	
+			{ value: 'S1107', text: 'Education (e.g. fees for correspondence courses abroad)' }, 	
+			{ value: 'S1108', text: 'Health Service (payment towards services received from hospitals, doctors, nurses, paramedical and similar services etc. rendered remotely or on-site)' },
+			{ value: 'S1109', text: 'Other Personal, Cultural & Recreational services' } 	 	
+    ],
+    '17': [
+        { value: '', text: 'Please select' },
+			{ value: 'S1401', text: 'Compensation of employees' }, 	 	
+			{ value: 'S1402', text: 'Remittance towards interest on Non-Resident deposits (FCNR(B)/NR(E)RA, etc.)' }, 	
+			{ value: 'S1403', text: 'Remittance towards interest on loans from Non-Residents (ST/MT/LT loans) e.g. External Commercial Borrowings, Trade Credits, etc.' }, 	
+			{ value: 'S1405', text: 'Remittance towards interest payment by ADs on their own account (to VOSTRO a/c holders or the OD on NOSTRO a/c.)' }, 	
+			{ value: 'S1408', text: 'Remittance of profit by FDI enterprises in India (by branches of foreign companies including bank branches)' }, 	
+			{ value: 'S1409', text: 'Remittance of dividends by FDI enterprises in India (other than branches) on equity and investment fund shares ' },	
+			{ value: 'S1410', text: 'Payment of interest by FDI enterprises in India to their Parent company abroad.' }, 	
+			{ value: 'S1411', text: 'Remittance of interest income on account of Portfolio Investment in India ' },	
+			{ value: 'S1412', text: 'Remittance of dividends on account of Portfolio Investment in India on equity and investment fund shares' }, 
+    ],
+	'18':
+	[
+			{ value: '', text: 'Please select' },
+			{ value: 'S1601', text: 'Payments on account of maintenance and repair services rendered for Vessels, ships, boats, warships, etc.' }, 	
+			{ value: 'S1602', text: 'Payments on account of maintenance and repair services rendered for aircrafts, space shuttles, rockets, military aircrafts,' }, 	
+	],
+	'19':[
+	{ value: 'S1701', text: 'Payments for processing of goods ' }
+	]
+                };
+
+                // Populate dropdown with the options
+                const options = optionsMap[catTradeRelValue] || [{ value: '', text: 'Please select' }];
+                options.forEach(optionData => {
+                    const option = document.createElement('option');
+                    option.value = optionData.value;
+                    option.textContent = optionData.text;
+                    if (optionData.value === preselectedValue) {
+                        option.selected = true;
+                    }
+                    dropdown.appendChild(option);
+                });
+
+                container.appendChild(dropdown);
+
+            }
+			
+			PURPOSE_CODE_DESC_OnChange();
+			debugger;
+		
+
+			if (["S0001","S0002","S0003","S0004","S0005","S0011","S0101","S0102","S0103","S0104","S0190","S0202","S0208","S0212","S0301","S0302","S0303","S0304","S0305","S0401","S0501","S0602","S1011","S1201","S1202","S1301","S1302","S1303","S1304","S1305","S1306","S1501","S1503"].includes(document.getElementById("PURPOSE_CODE").value)){
+		
+				document.getElementById("MANDT_OBT").value = 2;
+			} else {
+				document.getElementById("MANDT_OBT").value = 1;
+			}
+			
+        }
