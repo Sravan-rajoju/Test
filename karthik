@@ -234,3 +234,166 @@ debugger;
 
 
 onchange="PURPOSE_CODE_DESC_OnChange();
+
+
+
+
+
+
+
+
+
+
+
+
+function updatePurposeCodeDesc(catTradeRelValue, preselectedValue = '') {
+    debugger;
+
+    // Get the parent container of PURPOSE_CODE_DESC
+    const descField = document.getElementById('PURPOSE_CODE_DESC');
+    if (!descField) {
+        console.error("PURPOSE_CODE_DESC element not found in DOM");
+        return;
+    }
+
+    const container = descField.parentElement;
+    container.innerHTML = ''; // Clear the container
+
+    if (catTradeRelValue === '20') {
+        // Text input for free text
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.name = 'PURPOSE_CODE_DESC';
+        input.id = 'PURPOSE_CODE_DESC';
+        input.className = 'CHAR_M input-field';
+        input.placeholder = 'Enter your text here';
+
+        if (preselectedValue !== '') {
+            input.value = preselectedValue;
+        }
+
+        // Attach onChange event
+        input.addEventListener('change', function (event) {
+            PURPOSE_CODE_DESC_OnChange(event.target.value);
+        });
+
+        container.appendChild(input);
+
+    } else {
+        // Dropdown for different categories
+        const dropdown = document.createElement('select');
+        dropdown.id = 'PURPOSE_CODE_DESC';
+        dropdown.name = 'PURPOSE_CODE_DESC';
+        dropdown.className = 'CHAR_M select-field';
+
+        // Options mapping for each category value
+        const optionsMap = {
+            '4': [
+                { value: '', text: 'Please select' },
+                { value: 'S0017', text: 'Acquisition of non-produced non-financial assets (Purchase of intangible assets like patents, copyrights, trademarks etc., land acquired by government, use of natural resources)' },
+                { value: 'S0019', text: 'Acquisition of non-produced non-financial assets (Purchase of intangible assets like patents, copyrights, trademarks etc., use of natural resources) non-Government' },
+                { value: 'S0026', text: 'Capital transfers (Guarantees payments, Investment Grand given by the government/international organisation, exceptionally large Non-life insurance claims) Government' },
+                { value: 'S0027', text: 'Capital transfers (Guarantees payments, Investment Grand given by the Non-government, exceptionally large Non-life insurance claims) Non-Government' },
+                { value: 'S0099', text: 'Other capital payments not included elsewhere' },
+            ],
+            '1': [
+                { value: 'S0701', text: 'S0701' }
+            ],
+            '2': [
+                { value: 'S1002', text: 'S1002' }
+            ],
+            '3': [
+                { value: 'S1501', text: 'S1501' }
+            ],
+            '5': [
+                { value: '', text: 'Please select' },
+                { value: 'S0003', text: 'Indian Direct investment abroad (in branches & wholly owned subsidiaries) in equity Shares' },
+                { value: 'S0004', text: 'Indian Direct investment abroad (in subsidiaries and associates) in debt instruments' },
+                { value: 'S0005', text: 'Indian investment abroad in real estate' },
+                { value: 'S0006', text: 'Repatriation of Foreign Direct Investment made by overseas Investors in India in equity shares' },
+                { value: 'S0007', text: 'Repatriation of Foreign Direct Investment made by overseas Investors in India in debt instruments' },
+                { value: 'S0008', text: 'Repatriation of Foreign Direct Investment made by overseas Investors in India in real estate' },
+            ],
+            '6': [
+                { value: '', text: 'Please select' },
+                { value: 'S0001', text: 'Indian Portfolio investment abroad in equity shares' },
+                { value: 'S0002', text: 'Indian Portfolio investment abroad in debt instruments' },
+                { value: 'S0009', text: 'Repatriation of Foreign Portfolio Investment made by overseas Investors in India in equity shares' },
+                { value: 'S0010', text: 'Repatriation of Foreign Portfolio Investment made by overseas Investors in India in debt instruments' },
+            ],
+            '7': [
+                { value: '', text: 'Please select' },
+                { value: 'S0011', text: 'Loans extended to non-Residents' },
+                { value: 'S0012', text: 'Repayment of long- & medium-term loans with original maturity above one year received from Non-Residents' },
+            ],
+            '8': [
+                { value: 'S0013', text: 'Repayment of short-term loans with original maturity up to one year received from Non-Residents' },
+            ],
+            '9': [
+                { value: '', text: 'Please select' },
+                { value: 'S0201', text: 'Payments for surplus freight/passenger fare by foreign shipping companies operating in India' },
+                { value: 'S0202', text: 'Payment for operating expenses of Indian shipping companies operating abroad' },
+                { value: 'S0203', text: 'Freight on imports - Shipping companies' },
+                { value: 'S0204', text: 'Freight on exports - Shipping companies' },
+                { value: 'S0205', text: 'Operational leasing/Rental of Vessels (with crew) - Shipping companies' },
+                { value: 'S0206', text: 'Booking of passages abroad - Shipping companies' },
+                { value: 'S0207', text: 'Payments for surplus freight/passenger fare by foreign Airlines companies operating in India' },
+                { value: 'S0208', text: 'Operating expenses of Indian Airlines companies operating' },
+                { value: 'S0209', text: 'Freight on imports - Airlines companies' },
+                { value: 'S0210', text: 'Freight on exports - Airlines companies' },
+                { value: 'S0211', text: 'Operational leasing/Rental of Vessels (with crew) - Airline companies' },
+                { value: 'S0212', text: 'Booking of passages abroad - Airlines companies' },
+                { value: 'S0214', text: 'Payments on account of stevedoring, demurrage, port handling charges etc. (Shipping companies)' },
+                { value: 'S0215', text: 'Payments on account of stevedoring, demurrage, port handling charges, etc. (Airlines companies)' },
+                { value: 'S0216', text: 'Payments for Passenger - Shipping companies' },
+                { value: 'S0217', text: 'Other payments by Shipping companies' },
+                { value: 'S0218', text: 'Payments for Passenger - Airlines companies' },
+                { value: 'S0219', text: 'Other Payments by Airlines companies' },
+                { value: 'S0220', text: 'Payments on account of freight under other modes of transport (Internal Waterways, Roadways, Railways, Pipeline transports and others)' },
+                { value: 'S0221', text: 'Payments on account of passenger fare under other modes of transport (Internal Waterways, Roadways, Railways, Pipeline transports and others)' },
+                { value: 'S0222', text: 'Postal & Courier services by Air' },
+                { value: 'S0223', text: 'Postal & Courier services by Sea' },
+                { value: 'S0224', text: 'Postal & Courier services by others' },
+            ],
+            // ... keep the rest of your mapping (10, 11, 12, ... 19)
+        };
+
+        // Populate dropdown with the options
+        const options = optionsMap[catTradeRelValue] || [{ value: '', text: 'Please select' }];
+        options.forEach(optionData => {
+            const option = document.createElement('option');
+            option.value = optionData.value;
+            option.textContent = optionData.text;
+            if (optionData.value === preselectedValue) {
+                option.selected = true;
+            }
+            dropdown.appendChild(option);
+        });
+
+        // Attach onChange event
+        dropdown.addEventListener('change', function (event) {
+            PURPOSE_CODE_DESC_OnChange(event.target.value);
+        });
+
+        container.appendChild(dropdown);
+    }
+
+    // ✅ Set MANDT_OBT based on PURPOSE_CODE value
+    const purposeCodeElement = document.getElementById("PURPOSE_CODE");
+    const mandtObtElement = document.getElementById("MANDT_OBT");
+
+    if (purposeCodeElement && mandtObtElement) {
+        if ([
+            "S0001","S0002","S0003","S0004","S0005","S0011","S0101","S0102","S0103","S0104",
+            "S0190","S0202","S0208","S0212","S0301","S0302","S0303","S0304","S0305","S0401",
+            "S0501","S0602","S1011","S1201","S1202","S1301","S1302","S1303","S1304","S1305",
+            "S1306","S1501","S1503"
+        ].includes(purposeCodeElement.value)) {
+            mandtObtElement.value = 2;
+        } else {
+            mandtObtElement.value = 1;
+        }
+    }
+
+    debugger;
+}
