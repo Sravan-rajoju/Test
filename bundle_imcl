@@ -1,10 +1,4 @@
-const amountFields = [
-				{ ccy: 'COLL_CCY', amt: 'COLL_AMT'},
-				{ ccy: 'COLL_CCY1', amt: 'DRWNG_AMT_COLL_CCY'}
-				
-				
-			];
-	
+let currentStepIndex = 0;
 	const sections = [
 		{ id: 'mainDetails', number: 1, title: 'Basic Details', tickId: 'tick1', numberId: 'number', divid: '0_div' },
         { id: 'PartiesTab', number: 2, title: 'Bill Details', tickId: 'tick2', numberId: 'number1', divid: '1_div' },
@@ -15,137 +9,293 @@ const amountFields = [
 		
 	
 	];
-	
-			const cntyCodeFields = [
-				 { cntycd: 'CNTY_OF_ORGN', cntynm: 'CNTY_OF_ORGN_NM1'}
-				
-			
-			
-			
-			];
-			
-
 $(document).ready(function () {
-    
-	setTimeout(() => {
-		stepIconInit();
-	},300)
     $('div[id$="_div"]').each(function () {
-			var targetDiv = $(this); 
+			var targetDiv = $(this); // Assuming 'this' is the current target div
 			var rows = targetDiv.find('tr');
 			var count = 0;
 		
-		
+			// Remove any existing messageDisplay div on the page
 			targetDiv.find('#messageDisplay').remove();
 		
-			
+			// Create a new row container for non-textarea inputs
 			var newRow = $('<div class="row-container"></div>');
-			
 		
+			// Iterating over each row of inputs, selects, and labels
 			rows.each(function () {
 				var $row = $(this);
 				var inputs = $row.find('input,radio, select, textarea, input[type="hidden"]');
 				var labels = $row.find('.FldLabel, .FldLabel.star span');
-			
-                var buttons = $row.find('input[type="button"], button'); 
+				//var buttons = $row.find('button'); // Find buttons inside the row
+                var buttons = $row.find('input[type="button"], button'); // Find input type=button or button inside the row
+					
+					
+					/* if ($row.hasClass('four-col-layout')) {
+    const fourColRow = $('<div class="row-container four-column-row"></div>');
 
-			
+    const cells = $row.find('td');
+    for (let i = 0; i < cells.length; i += 2) {
+        const $label = $(cells[i]);
+        const $inputCell = $(cells[i + 1]);
+        const $input = $inputCell.find('input, select, textarea');
+
+        if ($input.length === 0) continue;
+
+        const wrapper = $('<div class="field-wrapper four-col-field"></div>');
+        wrapper.append($label.clone());
+        wrapper.append($input.clone());
+
+        fourColRow.append(wrapper);
+    }
+
+    targetDiv.append(fourColRow);
+    return; // Skip further processing of this row
+} */
+
+
+
+
+
+
+					
+					
+				// Iterate over each input/select/textarea
 				inputs.each(function (index) {
 					var $input = $(this);
-					
 					var $label = $(labels[index]);
+					
+// sravan 				
+					
 
-                 
+/*const isTwoColumnField = $row.hasClass('two-col-align') || $input.hasClass('two-col-field');
+
+if (isTwoColumnField) {
+    var twoColRow = $('<div class="row-container two-column-row"></div>');
+    var labelCell = $('<div class="label-cell"></div>').append($label);
+    var inputCell = $('<div class="input-cell"></div>');
+
+    if ($input.hasClass('DATE_M') || $input.hasClass('DATE_P') || $input.hasClass('DATE_O')) {
+        $('#ICO_' + $input.attr('id')).remove();
+        $input.datepicker({
+            showOn: "focus",
+            dateFormat: 'dd/mm/yy'
+        });
+		$input.addClass('input-field');
+        var calendarIcon = $('<svg>', {
+            width: "20",
+            height: "20",
+            viewBox: "0 0 22 20",
+            fill: "none",
+            class: "calendarbutton",
+            id: "ICO_" + $input.attr('id'),
+            title: "Pick a Date",
+            html: `<path d="M1.6665 7H20.3332M1.6665 7V15.8002..."/>`
+        }).on('click', function () {
+            $input.focus();
+        });
+
+        var dateWrapper = $('<div class="date-wrapper" style="width:460px; height: 56px"></div>');
+        dateWrapper.append($input).append(calendarIcon);
+        inputCell.append(dateWrapper);
+    }
+    else if ($input.hasClass('AMT_M') || $input.hasClass('AMT_P')) {
+        var amtWrapper = $('<div class="amount-wrapper"></div>');
+        var currencyDropdown = $row.find('select').first();
+        currencyDropdown.addClass('currency-dropdown');
+        //$input.addClass('amount-input');
+		$input.addClass('input-field');
+        amtWrapper.append(currencyDropdown).append($input);
+        inputCell.append(amtWrapper);
+    } else {
+        $input.addClass('input-field');
+        inputCell.append($input);
+    }
+
+    // Append message display + buttons if needed
+    buttons.each(function () {
+        inputCell.append($(this));
+    });
+
+    inputCell.append($('<div>', {
+        id: 'messageDisplay_' + ($input.attr('name') || ''),
+        class: 'error-message',
+        text: ''
+    }));
+
+    twoColRow.append(labelCell).append(inputCell);
+    targetDiv.append(twoColRow);
+    return;
+}*/
+
+const isTwoColumnField = $row.hasClass('two-col-align') || $input.hasClass('two-col-field');
+
+if (isTwoColumnField) {
+    var twoColRow = $('<div class="row-container two-column-row"></div>').css({
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: '12px',
+        gap: '12px'
+    });
+
+    var labelCell = $('<div class="label-cell"></div>').css({
+        width: '30%',
+        fontWeight: 'bold'
+    }).append($label);
+
+    var inputCell = $('<div class="input-cell"></div>').css({
+        width: '70%'
+    });
+
+    // === Common styling to apply ===
+    const applyInputStyles = function (input) {
+        input.addClass('input-field').css({
+            maxWidth: '670px',
+            width: '670px',
+            borderLeft: '1px solid #ccc',
+            marginLeft: '150px',
+            padding: '6px 8px',
+            fontSize: '14px',
+            border: '1px solid #ccc',
+            borderRadius: '9px',
+            boxSizing: 'border-box',
+            height: '50px',
+			marginTop:'35px'
+        });
+    };
+
+    // === Date fields ===
+    if ($input.hasClass('DATE_M') || $input.hasClass('DATE_P') || $input.hasClass('DATE_O')) {
+        $('#ICO_' + $input.attr('id')).remove();
+
+        $input.datepicker({
+            showOn: "focus",
+            dateFormat: 'dd/mm/yy'
+        });
+        applyInputStyles($input);
+
+        var calendarIcon = $('<svg>', {
+            width: "20",
+            height: "20",
+            viewBox: "0 0 22 20",
+            fill: "none",
+            class: "calendarbutton",
+            id: "ICO_" + $input.attr('id'),
+            title: "Pick a Date",
+            html: `<path d="M1.6665 7H20.3332M1.6665 7V15.8002..."/>`
+        }).on('click', function () {
+            $input.focus();
+        });
+
+        var dateWrapper = $('<div class="date-wrapper"></div>').css({
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            width: '100%'
+        });
+
+        dateWrapper.append($input).append(calendarIcon);
+        inputCell.append(dateWrapper);
+    }
+
+    // === Amount + Currency dropdown fields ===
+    else if ($input.hasClass('AMT_M') || $input.hasClass('AMT_P')) {
+        applyInputStyles($input);
+        var amtWrapper = $('<div class="amount-wrapper"></div>').css({
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            width: '100%'
+        });
+
+        var currencyDropdown = $row.find('select').first();
+        currencyDropdown.addClass('currency-dropdown');
+
+        amtWrapper.append(currencyDropdown).append($input);
+        inputCell.append(amtWrapper);
+    }else if ($input.hasClass('INT_M') || $input.hasClass('INT_O')|| $input.hasClass('INT_P') ) {
+    $input.addClass('input-field');
+
+    // Apply default styles for INT_M inputs
+    $input.css({
+        /* width: '100%',
+        borderLeftWidth: '1px',
+        borderLeftStyle: 'solid',
+        borderLeftColor: '#ccc',
+        marginLeft: '25px',
+        //padding: '6px 8px',
+        fontSize: '14px',
+        border: '1px solid #ccc',
+        borderRadius: '4px',
+        boxSizing: 'border-box',
+        height: '32px' */
+    });
+
+    inputCell.append($input);
+}
+
+    // === All other fields (INT, CHAR, etc.) ===
+    else {
+        applyInputStyles($input);
+        inputCell.append($input);
+    }
+
+    // === Optional: Append buttons ===
+    buttons.each(function () {
+        inputCell.append($(this));
+    });
+
+    // === Append message display ===
+    inputCell.append($('<div>', {
+        id: 'messageDisplay_' + ($input.attr('name') || ''),
+        class: 'error-message',
+        text: ''
+    }));
+
+    twoColRow.append(labelCell).append(inputCell);
+    targetDiv.append(twoColRow);
+    return;
+}
+					
+				
+					
+					
+					// sravan 
+					
+					
+					
+					
+
+                    // Handle hidden inputs separately (to avoid visual rendering)
                     if ($input.is('input[type="hidden"]')) {
-                        targetDiv.append($input); 
-                        return;
+                        targetDiv.append($input);  // Keep hidden input in form for submission
+                        return;  // Skip to the next input
                     }
 
-                
+                    // Handle spans (for additional labels or text inside td)
+					
+//TEST isFourColumnField
+					var isFourColumnField = ($row.hasClass('four-field-inline-row') || $input.hasClass('four-field-inline-row'));
+					var isTwoColumnFieldBottom = ($row.hasClass('two-col-align-bottom') || $input.hasClass('two-col-align-bottom'));
+						console.log("isFourColumnField---->"+isFourColumnField);
+						const headerRowFields = targetDiv.find('tr.four-field-inline-row');
+//TEST isFourColumnField
+					
                     if ($label && $label.is('span')) {
                         var spanWrapper = $('<div class="span-wrapper"></div>');
-                        spanWrapper.append($label);  
-                        newRow.append(spanWrapper);  
-                        return;  
+                        spanWrapper.append($label);  // Display the span element properly
+                        newRow.append(spanWrapper);  // Append span in the current row container
+                        return;  // Skip further processing for this iteration
                     }
 
-					
-	
-					 if (amountFields.map(field => field.ccy).includes($input.attr('name'))) {
                     
-                        $input.on('change', function () {
-						var ccyFieldId = $input.attr('id');
-
-				
-						var fieldMapping = amountFields.find(field => field.ccy === ccyFieldId);
-						
-						if (fieldMapping) {
-							var amtFieldId = fieldMapping.amt;
-							var amountInWordsDiv = document.getElementById(amtFieldId + '_amountInWords');
-							var ccyDiv = $('#' + ccyFieldId).parent();
-
-						
-							ccyDiv.attr('style', 'display: flex !important; align-items: top !important; gap: 2% !important; width: 100% !important; height: 60% !important;');
-							$('#' + ccyFieldId).attr('style', 'flex: 0 0 24% !important; max-width: 24% !important; min-width: 24% !important; height: 70% !important;');
-							$('#' + amtFieldId).attr('style', 'flex: 0 0 74% !important; max-width: 74% !important; min-width: 74% !important; height: 70% !important;');
-							ccyDiv.css({ flexWrap: 'wrap' });
-
-						
-							if ($('#' + amtFieldId).val().trim() === "") {
-								amountInWordsDiv.textContent = "";
-								reArrangeAmtFields();
-							} else {
-								var amountInWords = amountInWordsNew(ccyFieldId, amtFieldId); 
-								amountInWordsDiv.textContent = amountInWords;
-							}
-						}
-					}); 
-                    }
-					
-					else if (amountFields.map(field => field.amt).includes($input.attr('name'))) {
-                      
-                        $input.on('input', function () {
-						var amtFieldId = $input.attr('id');
-
-					
-						var fieldMapping = amountFields.find(field => field.amt === amtFieldId);
-						
-						if (fieldMapping) {
-							var ccyFieldId = fieldMapping.ccy;
-							var amountInWordsDiv = document.getElementById(amtFieldId + '_amountInWords');
-							var ccyDiv = $('#' + ccyFieldId).parent();
-
-						
-							ccyDiv.attr('style', 'display: flex !important; align-items: top !important; gap: 2% !important; width: 100% !important; height: 60% !important;');
-							$('#' + ccyFieldId).attr('style', 'flex: 0 0 24% !important; max-width: 24% !important; min-width: 24% !important; height: 70% !important;');
-							$('#' + amtFieldId).attr('style', 'flex: 0 0 74% !important; max-width: 74% !important; min-width: 74% !important; height: 70% !important;');
-							ccyDiv.css({ flexWrap: 'wrap' });
-
-						
-							if ($input.val().trim() === "") {
-								amountInWordsDiv.textContent = "";
-								reArrangeAmtFields();
-							} else {
-								var amountInWords = amountInWordsNew(ccyFieldId, amtFieldId); // Call the conversion function
-								amountInWordsDiv.textContent = amountInWords; // Update the text in the amountInWordsDiv
-								
-							}
-						}
-					}); 
-                    } 
-					
-					
-                    
-                     if($input.attr('type') === 'radio'){
-						 debugger;
-                        var fieldWrapper = $('<div class="field-wrapper"></div>');
+                 else if($input.attr('type') === 'radio'){
+                        var fieldWrapper = $('<div class="radio-group"></div>');
                         fieldWrapper.append($label);
                         var radioGroup = $row.find(`input[name="${$input.attr('name')}"]`);
                         var radioWrapper = $('<div class="radio-wrapper"></div>');
                         radioGroup.each(function () {
                             var $radio = $(this);
-                            var radioLabel = $row.find(`label[for="${$radio.attr('id')}"]`);  
-							radioLabel.css('z-index',99);							
+                            var radioLabel = $row.find(`label[for="${$radio.attr('id')}"]`);                            
                             radioWrapper.append($radio); 
                             radioWrapper.append(radioLabel);                            
                         });
@@ -153,19 +303,20 @@ $(document).ready(function () {
 
                         newRow.append(fieldWrapper);
                         count++;
-                    } 
 					
-					 
-					else if ($input.length && $label.length) {
+                    }
+
+					else if ($input.length && $label.length && (!isFourColumnField)) {
+						
 						var fieldWrapper = $('<div class="field-wrapper"></div>');
 						fieldWrapper.append($label);
 		
-						
+						// Handling specific classes for inputs and disabling some
 						if ($input.hasClass('INT_P') || $input.hasClass('AMT_P') || $input.hasClass('CHAR_P') || $input.hasClass('TIME_P')) {
-							$input.attr('disabled', true); 
+							$input.attr('disabled', true); // Add class and disable
 						}
 		
-					
+						// Handling date inputs with a custom calendar icon
 						if ($input.hasClass('DATE_M') || $input.hasClass('DATE_P') || $input.hasClass('DATE_O')) {
 							$('#ICO_' + $input.attr('id')).remove();
 							$input.datepicker({
@@ -178,7 +329,7 @@ $(document).ready(function () {
                                 height: "20",
                                 viewBox: "0 0 22 20",
                                 fill: "none",
-                             
+                                //xmlns: "http://www.w3.org/2000/svg",
                                 class: "calendarbutton",
                                 id: "ICO_" + $input.attr('id'),
                                 title: "Pick a Date",
@@ -195,24 +346,32 @@ $(document).ready(function () {
 		
 							fieldWrapper.append(dateWrapper);
 						} else if ($input.is('textarea')) {
-                            console.log($input.name);
-                          
+                            //console.log($input.name);
+                            // Handle textarea to occupy a full row
                             $input.removeAttr('style');
                             $input.addClass('textarea-field');
             
                             var textareaWrapper = $('<div class="textarea-wrapper"></div>');
                             textareaWrapper.append($input);
             
-                          
-                            var cols = $input.attr('cols') || 50; 
-                            var rows = $input.attr('rows') || 5;  
-                            var maxLength = cols * rows; 
-                            $input.attr('maxlength', maxLength); 
+                            // Calculate the maxlength based on the cols and rows attributes
+                            var cols = $input.attr('cols') || 50; // Default to 50 if not set
+                            var rows = $input.attr('rows') || 5;  // Default to 5 if not set
+                            var maxLength = cols * rows; // Calculate the maxlength
+                            $input.attr('maxlength', maxLength); // Set the maxlength attribute
             
-                         
-                            var charCountDisplay = $('<div class="char-count">0/' + maxLength + ' characters</div>'); 
+                            // Add a character count display for the textarea
+                            var charCountDisplay = $('<div class="char-count">0/' + maxLength + ' characters</div>'); // Show calculated maxLength
+							
+							//Show character length for text fields
+							setTimeout(() => {
+								if(($(this).val().length) > 0){
+								var currentLength = $(this).val().length;
+                                charCountDisplay.text(currentLength + '/' + maxLength + ' characters');
+							}
+							},500)
             
-                         
+                            // Update character count on input event
                             $input.on('input', function () {
                                 var currentLength = $(this).val().length;
                                 charCountDisplay.text(currentLength + '/' + maxLength + ' characters');
@@ -223,59 +382,76 @@ $(document).ready(function () {
                             textareaFieldWrapper.append(textareaWrapper);
                             textareaFieldWrapper.append(charCountDisplay);
             
-                           
+                            // Append the textarea row directly
                             var textareaRow = $('<div class="row-container textarea-row"></div>');
                             textareaRow.append(textareaFieldWrapper);
                             targetDiv.append(textareaRow); 
             
-                           
+                            // Reset newRow for the next set of inputs
                             newRow = $('<div class="row-container"></div>');
-                            count = 0; 
+                            count = 0; // Reset count
                         } else if ($input.is('select')) {
-							
+							// For select fields, apply custom styling
 							var selectWrapper = $('<div class="select-wrapper"></div>');
 							$input.addClass('select-field');
 							selectWrapper.append($input);
 							fieldWrapper.append(selectWrapper);
-						
+						// } else if ($input.is(':radio')) {
+						// 	// For radio buttons, apply custom styling
+						// 	var radioWrapper = $('<div class="radio-wrapper"></div>');
+						// 	//var customRadio = $('<span class="custom-radio"></span>');
+							
+						// 	$input.addClass('radio-field');
+							
+						// 	// Append the radio input and custom span into the wrapper
+						// 	radioWrapper.append($input);
+						// 	//radioWrapper.append(customRadio);
+							
+						// 	// Find the associated label and move it into the wrapper
+						// 	var label = $('label[for="' + $input.attr('id') + '"]');
+						// 	radioWrapper.append(label);
+							
+						// 	// Append the wrapper to the parent container
+						// 	$input.closest('td').append(radioWrapper);
+						// }
                         } else {
-						
+							// Apply input field styling for regular input fields
 							$input.addClass('input-field');
 							fieldWrapper.append($input);
 						}
 
-					
+						// Append buttons next to input fields (replace input[type="button"] with button)
                         buttons.each(function () {
                             var $button = $(this);
 
-                          
+                            // If the button is still an input, replace it
                             if ($button.is('input[type="button"]')) {
                                 var buttonClass = $button.attr('class');
                                 var buttonText = $button.val();
-                                var buttonTitle = $button.attr('title'); 
-                                var buttonOnClick = $button.attr('onclick'); 
+                                var buttonTitle = $button.attr('title'); // Capture title
+                                var buttonOnClick = $button.attr('onclick'); // Get onclick event
                                 var newButton;
 
-                               
+                                // Update class based on conditions
                                 if (buttonClass === 'search' || buttonText === 'Search BIC/IFSC') {
-                                  
-                                    buttonClass = 'search-button'; 
+                                    // Create Search button
+                                    buttonClass = 'search-button'; // Apply the search button class
                                     newButton = $('<button>', {
                                         id: $button.attr('id'),
-                                        class: buttonClass,
-                                        title: buttonTitle,
-                                        text: 'Search', 
+                                        class: buttonClass, // Apply the updated class
+                                        title: buttonTitle, // Set the title
+                                        text: 'Search', // Set button text to "Search"
                                         click: function (event) {
-                                            event.preventDefault(); 
-                                           
+                                            event.preventDefault(); // Prevent form submission
+                                            // Execute the same onclick function as the input if any
                                             if ($button.attr('onclick')) {
                                                 eval($button.attr('onclick'));
                                             }
                                         }
                                     });
                                 } else if (buttonText === 'Reset' || buttonText === 'Reset BIC/IFSC') {
-                                   
-                                    buttonClass = 'clear-button'; 
+                                    // Create Clear button with SVG icon
+                                    buttonClass = 'clear-button'; // Apply the clear button class
                                     var clearSVG = `
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                             <path d="M18.3002 5.70997C17.9102 5.31997 17.2802 5.31997 16.8902 5.70997L12.0002 10.59L7.11022 5.69997C6.72022 5.30997 6.09021 5.30997 5.70021 5.69997C5.31021 6.08997 5.31021 6.71997 5.70021 7.10997L10.5902 12L5.70021 16.89C5.31021 17.28 5.31021 17.91 5.70021 18.3C6.09021 18.69 6.72022 18.69 7.11022 18.3L12.0002 13.41L16.8902 18.3C17.2802 18.69 17.9102 18.69 18.3002 18.3C18.6902 17.91 18.6902 17.28 18.3002 16.89L13.4102 12L18.3002 7.10997C18.6802 6.72997 18.6802 6.08997 18.3002 5.70997Z" fill="#747474"/>
@@ -283,27 +459,27 @@ $(document).ready(function () {
 
                                     newButton = $('<button>', {
                                         id: $button.attr('id'),
-                                        class: buttonClass, 
-                                        title: buttonTitle, 
-                                        html: clearSVG, 
+                                        class: buttonClass, // Apply the updated class
+                                        title: buttonTitle, // Set the title
+                                        html: clearSVG, // Insert SVG as the button content
                                         click: function (event) {
-                                            event.preventDefault(); 
-                                          
+                                            event.preventDefault(); // Prevent form submission
+                                            // Execute the same onclick function as the input if any
                                             if ($button.attr('onclick')) {
                                                 eval($button.attr('onclick'));
                                             }
                                         }
                                     });
                                 } else {
-                                 
+                                    // Create default button
                                     newButton = $('<button>', {
                                         id: $button.attr('id'),
-                                        class: buttonClass, 
-                                        title: buttonTitle, 
-                                        text: buttonText,
+                                        class: buttonClass, // Apply the updated class
+                                        title: buttonTitle, // Set the title
+                                        text: buttonText, // Use the input's value as button text
                                         click: function (event) {
-                                            event.preventDefault(); 
-                                         
+                                            event.preventDefault(); // Prevent form submission
+                                            // Execute the same onclick function as the input if any
                                             if ($button.attr('onclick')) {
                                                 eval($button.attr('onclick'));
                                             }
@@ -311,37 +487,37 @@ $(document).ready(function () {
                                     });
                                 }
 
-                             
+                                // If there is an onclick event, bind it to the button
                                 if (buttonOnClick) {
                                     newButton.attr('onclick', buttonOnClick);
                                 }
 
-                               
+                                // Append the newly created button to the fieldWrapper
                                 fieldWrapper.append(newButton);
                             } else {
-                              
+                                // If the element is not an input[type="button"], append it as-is
                                 fieldWrapper.append($button);
                             }
                         });
 
 
 
-						 
+						 // Create a unique messageDisplay div based on the input name or ID
                          var messageDisplay = $('<div>', {
                             id: 'messageDisplay_' + $input.attr('name'),
                             class: 'error-message',
-                            text: ''
+                            text: '' // Initially empty, to be filled with error messages later
                         });
             
-                       
+                        // Append messageDisplay div inside the field-wrapper
                         fieldWrapper.append(messageDisplay);
 		
-					
+						// If it's not a textarea, append to newRow
 						if (!$input.is('textarea')) {
 							newRow.append(fieldWrapper);
 							count++;
 		
-						
+							// Append the new row to the target div every 3 inputs (excluding text areas)
 							if (count === 3) {
 								targetDiv.append(newRow);
 								newRow = $('<div class="row-container"></div>');
@@ -349,54 +525,170 @@ $(document).ready(function () {
 							}
 						}
 					}
+					
+//TEST isFourColumnField
+					else if (headerRowFields.length >= 1) {
+						const inlineRow = $('<div class="row-container four-heading-line"></div>');
+					
+						headerRowFields.each(function (index) {
+							const $row = $(this);
+							const labelText = $row.find('h3').text().trim();
+					
+							const fieldWrapper = $('<div class="inline-header-block" style="width:375px"></div>');
+					
+							if (index < 4) {
+								// First 4 items as headings
+								const labelElem = $('<h3 class="inline-header"></h3>').text(labelText);
+								fieldWrapper.append(labelElem);
+							} else {
+								// Remaining items as input only (no label)
+								const inputElem = $('<input type="text" class="inline-input" style="width:375px;height:35px;border-radius:10px;border-width: thin;margin-bottom:2px;padding-bottom:2px" placeholder="' + labelText + '" />');
+								fieldWrapper.append(inputElem);
+							}
+					
+							inlineRow.append(fieldWrapper);
+							$row.remove(); // Remove original <tr> to avoid duplication
+						});
+					
+						targetDiv.append(inlineRow);
+					}
+//TEST isFourColumnField
+//TEST isTwoColumnFieldBottom
+else if (isTwoColumnFieldBottom) { 
+						var twoColRow = $('<div class="row-container two-column-row"></div>');
+						var labelCell = $('<div class="label-cell"></div>').append($label);
+						var inputCell = $('<div class="input-cell"></div>');
+					
+						if ($input.hasClass('DATE_M') || $input.hasClass('DATE_P') || $input.hasClass('DATE_O')) {
+							$('#ICO_' + $input.attr('id')).remove();
+							$input.datepicker({
+								showOn: "focus",
+								dateFormat: 'dd/mm/yy'
+							});
+							$input.addClass('input-field');
+							var calendarIcon = $('<svg>', {
+								width: "20",
+								height: "20",
+								viewBox: "0 0 22 20",
+								fill: "none",
+								class: "calendarbutton",
+								id: "ICO_" + $input.attr('id'),
+								title: "Pick a Date",
+								html: `<path d="M1.6665 7H20.3332M1.6665 7V15.8002..."/>`
+							}).on('click', function () {
+								$input.focus();
+							});
+					
+							var dateWrapper = $('<div class="date-wrapper" style="width:460px; height: 56px"></div>');
+							dateWrapper.append($input).append(calendarIcon);
+							inputCell.append(dateWrapper);
+						}
+						else if ($input.hasClass('AMT_M') || $input.hasClass('AMT_P')) {
+							var amtWrapper = $('<div class="amount-wrapper"></div>');
+							var currencyDropdown = $row.find('select').first();
+							currencyDropdown.addClass('currency-dropdown');
+							//$input.addClass('amount-input');
+							$input.addClass('input-field');
+							amtWrapper.append(currencyDropdown).append($input);
+							inputCell.append(amtWrapper);
+						} else {
+							$input.addClass('input-field');
+							inputCell.append($input);
+						}
+					
+						// Append message display + buttons if needed
+						buttons.each(function () {
+							inputCell.append($(this));
+						});
+					
+						inputCell.append($('<div>', {
+							id: 'messageDisplay_' + ($input.attr('name') || ''),
+							class: 'error-message',
+							text: ''
+						}));
+					
+						twoColRow.append(labelCell).append(inputCell);
+						targetDiv.append(twoColRow);
+						return;
+					}
+//TEST isTwoColumnFieldBottom
+
+						
+						//Start Amount in foreign currency format 
+						if ($input.hasClass('AMT_M') || $input.hasClass('AMT_P') || $input.hasClass('AMT_O')) {
+							var currentAttr = $input.attr('onchange') || '';
+							if (!currentAttr.includes('NumberConv')) {
+								var NumberConv_Val = currentAttr.endsWith(';') ? ' NumberConv(event);' : '; NumberConv(event);';
+								var updatedAttr = currentAttr ? currentAttr + NumberConv_Val : 'NumberConv(event);';
+								$(this).attr('onchange', updatedAttr);
+							}
+						}
+						//End Amount in foreign currency format 
+
+
+
+
+
 				});
 			});
 		
-		
+			// Append any remaining inputs after the loop (if less than 3 fields are left)
 			if (newRow.children().length > 0) {
 				targetDiv.append(newRow);
 			}
+		
+		
 
-     
+		// Amount fields ,Add your Currency and amount fields respectively
+	
+		const amountFields = [
+				{ ccy: 'COLL_CCY', amt: 'COLL_AMT'},
+				{ ccy: 'COLL_CCY1', amt: 'DRWNG_AMT_COLL_CCY'}
+				
+				
+			];
+				const cntyCodeFields = [
+				 { cntycd: 'CNTY_OF_ORGN', cntynm: 'CNTY_OF_ORGN_NM1'}
+				
+			
+			
+			
+			];
+			
+        // Function to remove empty <tr> and <td> elements
         function removeEmptyRowsAndCells() {
-       
+            // Loop through all <td> elements
             targetDiv.find('td').each(function () {
                 var $td = $(this);
 				
 				const fldId = $td.find('input').first().attr('id'); 
-              
+                // Check if the content is empty, including <nobr> and <span> elements that contain only whitespace or &nbsp;
                 var isEmpty = $td.text().trim() === "" || $td.html().replace(/\s|&nbsp;/g, '') === "";
-             
+                
 				var amtFld = amountFields.find(section => section.amt === fldId);
-			
-               if (isEmpty && !amtFld  ) {
-                    $td.remove(); 
+                if (isEmpty && !amtFld) {
+                    $td.remove(); // Remove the empty <td>
                 }
-				
             });
-			
-			
 
-         
+            // Loop through all <tr> elements
             targetDiv.find('tr').each(function () {
                 var $tr = $(this);
-            
+                // If the <tr> contains no <td> elements (all empty ones are removed), remove the row
                 if ($tr.find('td').length === 0) {
                     $tr.remove();
                 }
             });
         }
-		
 			
-	
- 
- function reArrangeAmtFields() {
+		//Function to format amount fields 
+			function reArrangeAmtFields() {
 				
 			$.each(amountFields, function(_, sec) {
 				var ccy = $('#' + sec.ccy);
 				var amt = $('#' + sec.amt);
 				var ccyDiv = ccy.parent();
-			
+				// Apply flex styling
 				ccyDiv.css({
 					display: 'flex',alignItems: 'center',gap: '2%',width:'98%'
 				});
@@ -406,69 +698,112 @@ $(document).ready(function () {
 				amt.css({
 					flex: '0 0 74%',maxWidth:'74%',minWidth:'74%'
 				});
-			
+				// Move amount field inside currency div if not already inside
 				if (!amt.parent().is(ccyDiv)) {
 					ccyDiv.append(amt);
 				}
 			});
 		}
-	
+		//try 
 		
-		function removeEmptyRadioWrapper(){
-			document.querySelectorAll(".radio-wrapper").forEach(field => { 
-			debugger;
-				
-				if(field.innerHTML == ''){
-					field.parentElement.remove();
+			function reArrangeCntyCodeFields() {
+
+			$.each(cntyCodeFields, function(_, sec) {
+				var cntycd = $('#' + sec.cntycd);
+				var cntynm = $('#' + sec.cntynm);
+				var cntycdDiv = cntycd.parent();
+				// Apply flex styling with high priority for height
+				cntycdDiv.attr('style', 'display: flex ; align-items: center ; gap: 2% ; width: 100% ;');
+				cntycd.attr('style', 'flex: 0 0 26% ; max-width: 26% ; min-width: 26% ;');
+				cntynm.attr('style', 'flex: 0 0 72% ; max-width: 72% ; min-width: 72% ;');
+				cntycdDiv.css({ flexWrap: 'wrap' });
+				// Move amount field inside currency div if not already inside
+				if (!cntynm.parent().is(cntycdDiv)) {
+					cntycdDiv.append(cntynm);
 				}
+				
+				
 			});
 		}
-		
-       
+		//try
+        // Call the function to remove empty <tr> and <td>
         removeEmptyRowsAndCells();
-		
-        
+        // Call the function to rearange amount fields
          reArrangeAmtFields();
-       
-         removeEmptyRadioWrapper() ;
-		 reArrangeCntyCodeFields();
+         reArrangeCntyCodeFields();
+		 
 
-       
+
+        // Function to wrap the error_O rows inside the field-wrapper
+        // Function to wrap the error_O rows inside the field-wrapper
         function wrapErrorRows() {
             $('tr[id^="error_O"]').each(function () {
                 var $errorRow = $(this);
-                var errorFieldId = $errorRow.find('input').attr('id'); 
-                var correspondingInput = $('#' + errorFieldId.replace('error_O_', '')); 
+                var errorFieldId = $errorRow.find('input').attr('id'); // Get the id of the error field
+                var correspondingInput = $('#' + errorFieldId.replace('error_O_', '')); // Get the corresponding input field
 
                 if (correspondingInput.length) {
-                  
+                    // Locate the field-wrapper related to this input
                     var $inputFieldWrapper = correspondingInput.closest('.field-wrapper');
 
-                   
+                    // Wrap the error message inside the error-wrapper div
                     var errorWrapper = $('<div class="error-wrapper"></div>');
                     var errorContent = $errorRow.find('.errorClass');
 
                     if (errorContent.length) {
-                        
+                        // Create a div to replace the input field for the error message
                         var errorDiv = $('<div class="errorClass"></div>').text(errorContent.val());
 
-                        
-                        errorWrapper.append(errorDiv); 
-                        $inputFieldWrapper.append(errorWrapper); 
-                        $errorRow.remove(); 
+                        // Append the errorDiv instead of input
+                        errorWrapper.append(errorDiv); // Move error message to div wrapper
+                        $inputFieldWrapper.append(errorWrapper); // Append error-wrapper to field-wrapper
+                        $errorRow.remove(); // Remove the original error_O row since it's been moved
                     }
                 }
             });
         }
 
-
+// Call the function to wrap error rows
 wrapErrorRows();
 
 
-       
+        // Call the function to wrap error rows
         wrapErrorRows();
 
-       
+        // // Function to check if all mandatory fields within the div are filled 
+        // function checkMandatoryFieldsForDiv(divid) {
+        //     let allFilled = true;
+        //     const div = $(`#${divid}`);
+
+        //     // Check all mandatory fields inside the specific div
+        //     div.find('.DATE_M, .CHAR_M, .INT_M, .AMT_M').each(function () {
+        //         if ($(this).val() === "" || $(this).val() == null) {
+        //             allFilled = false;
+        //         }
+        //     });
+        //     // Show the tick icon and hide the number if all fields are filled
+        //     if (allFilled) {
+        //         div.find('.tick-icon').show();
+        //         div.find('.number-circle').hide();
+        //         $('#PRE_BT').show();
+        //         $('#NEXT_BT').hide();
+        //     } else {
+        //         // If not all mandatory fields are filled, show the number
+        //         div.find('.tick-icon').hide();
+        //         div.find('.number-circle').show();
+        //         $('#PRE_BT').hide(); // Hide submit button
+        //     }
+        // }
+
+        // // Attach the function to change event of mandatory fields within the div
+        // targetDiv.find('.DATE_M, .CHAR_M, .INT_M, .AMT_M').on('change keyup', function () {
+        //     checkMandatoryFieldsForDiv(targetDiv.attr('id'));
+        // });   
+
+        // // Initial check if fields are already filled (e.g., when the page is loaded)
+        // checkMandatoryFieldsForDiv(targetDiv.attr('id'));
+
+        // Function to check if all mandatory fields within a specific div are filled
 
 
     });
@@ -478,16 +813,9 @@ wrapErrorRows();
         const div = $(`#${divid}`);
          div.find('.DATE_M, .CHAR_M, .INT_M, .AMT_M').each(function () {
             if ($(this).val() === "" || $(this).val() == null) {
-                allFilled = false; 
+                allFilled = false;  // Mark as false if any mandatory field is empty or null
             }
         }); 
-		
-		div.find('.AMT_M').each(function () {
-                if ($(this).val() === 0 || $(this).val() === "") {
-                    allFilled = false;
-                } 
-            });
-		
         if (allFilled) {
             div.find('.tick-icon').show();
             div.find('.number-circle').hide();
@@ -498,43 +826,16 @@ wrapErrorRows();
 
         return allFilled;
     }
-	
-	function scrollToTheField(fldId){
-    $('html, body').animate({
-        scrollTop:$("#" + fldId).offset().top
-    },600);
-}
-	
-	
-		function reArrangeCntyCodeFields() {
 
-			$.each(cntyCodeFields, function(_, sec) {
-				var cntycd = $('#' + sec.cntycd);
-				var cntynm = $('#' + sec.cntynm);
-				var cntycdDiv = cntycd.parent();
-				
-				cntycdDiv.attr('style', 'display: flex ; align-items: center ; gap: 2% ; width: 100% ;');
-				cntycd.attr('style', 'flex: 0 0 26% ; max-width: 26% ; min-width: 26% ;');
-				cntynm.attr('style', 'flex: 0 0 72% ; max-width: 72% ; min-width: 72% ;');
-				cntycdDiv.css({ flexWrap: 'wrap' });
-				
-				if (!cntynm.parent().is(cntycdDiv)) {
-					cntycdDiv.append(cntynm);
-				}
-				
-				
-			});
-		}
-
-   
+    // Function to check if all divs with mandatory fields are filled
     function checkAllMandatoryFields() {
         let allDivsFilled = true;
 
-     
+        // Iterate over all divs that have mandatory fields
         $('div[id$="_div"]').each(function () {
             const divId = $(this).attr('id');
 
-           
+            // Check if the div contains mandatory fields and ensure they're filled
             if ($(this).find('.DATE_M, .CHAR_M, .INT_M, .AMT_M').length > 0) {
                 const divFilled = checkMandatoryFieldsForDiv(divId);
                 if (!divFilled) {
@@ -543,7 +844,7 @@ wrapErrorRows();
             }
         });
 
- 
+        // Show the submit button (PRE_BT) if all mandatory fields in all divs are filled
         if (allDivsFilled) {
             $('#PRE_BT').show();
             $('#NEXT_BT').hide();  // Hide the next button
@@ -569,6 +870,8 @@ wrapErrorRows();
     });
 
 
+    // Stepper data
+	
 
 	// Variable to track the active step
 	let activeStep = null;
@@ -589,7 +892,7 @@ wrapErrorRows();
             const newSectionId = `step_${section.divid}`;
             //const containerId = $(`#${section.id}_container`);
             const containerId = `#${section.id}_container`;
-            console.log($(containerId));
+            //console.log($(containerId));
 
 			stepDiv.append(stepNumber, stepTitle);
 
@@ -616,8 +919,9 @@ wrapErrorRows();
 		});
 
 		// Button container initialization (new code)
-        const cueCardButton = $('<span>', { class: 'cue-card' ,onclick:'openInfoPdf()' });
-        const stepByStepVideo = $('<span>', { class: 'step-by-step', text: 'Step by Step Video',onclick:'openInfoVideo()' });
+        const cueCardButton = $('<span>', { class: 'cue-card' });
+        const stepByStepVideo = $('<span>', { class: 'step-by-step', text: 'Step by Step Video' });
+        const useExistingBG = $('<span>', { class: 'use-existing-bg', text: 'Use Existing BG' ,onclick:'Existing_bg()'});
        const useExistingTemplate = $('<span>', { class: 'use-existing-template', text: 'Use Existing Template' ,onclick:'template_IMCLPayment()' });
     
         const cueCardText = $('<span>', { class: 'cue-card-text', text: 'Cue Card' });
@@ -655,21 +959,20 @@ wrapErrorRows();
 
         // Add event listeners to buttons
         cueCardButton.on('click', function () {
-            console.log("Cue Card clicked");
+            //console.log("Cue Card clicked");
             // Add Cue Card functionality here
-			openInfoPdf();
         });
 
         stepByStepVideo.on('click', function () {
-            console.log("Step by Step Video clicked");
-            openInfoVideo();  // Use existing step_by_step() function
+            //console.log("Step by Step Video clicked");
+            step_by_step();  // Use existing step_by_step() function
         });
 
         
-         useExistingTemplate.on('click', function () {
-            console.log("Use Existing Template clicked");
+        useExistingTemplate.on('click', function () {
+            //console.log("Use Existing Template clicked");
             template_IssueLc();  // Use existing template_IssueLc() function
-        }); 
+        });
 
         // Add event listener for the Next button
          $('.next-button').on('click', function () {
@@ -740,7 +1043,59 @@ wrapErrorRows();
     }
     
 
-	
+	// Function to check mandatory fields for each section and update the stepper accordingly
+	function checkMandatoryFields(section,number) {
+		const div = $(`#${section.divid}`);
+		const stepIcon = $(`#step_${section.divid} .step-number`); // Use the step number element as the icon
+		let allFilled = true;
+
+		// Check if all required fields are filled in the section
+		div.find('.DATE_M, .CHAR_M, .INT_M, .AMT_M').each(function () {
+			if ($(this).val() === "") {
+				allFilled = false;
+			}
+		});
+
+		// Update the step icon based on the completion status
+		if(SYS_FUNCTION_TYPE != 'RE'){
+				if (allFilled) {
+					//debugger;
+				 stepIcon.html(`
+                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="24" height="24" rx="12" fill="#5553AA"/>
+                    <path d="M9.74998 15.1275L7.14748 12.525C6.85498 12.2325 6.38248 12.2325 6.08998 12.525C5.79748 12.8175 5.79748 13.29 6.08998 13.5825L9.22498 16.7175C9.51748 17.01 9.98998 17.01 10.2825 16.7175L18.2175 8.78249C18.51 8.48999 18.51 8.01749 18.2175 7.72499C17.925 7.43249 17.4525 7.43249 17.16 7.72499L9.74998 15.1275Z" fill="white"/>
+					</svg>
+				`);
+				} else {
+            // Reset to step number and use SVG text based on section.number
+				stepIcon.html(`
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<text x="12" y="16" font-family="Roboto" font-size="14" font-weight="400" 
+							fill="var(--icon-color, #FFF)" text-anchor="middle" 
+							style="line-height: 28px; text-align: center;">
+							${section.number}
+						</text>
+					</svg>
+				`);
+			}
+           
+        }else if(SYS_FUNCTION_TYPE == 'RE'){
+				 stepIcon.html(`
+                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="24" height="24" rx="12" fill="#5553AA"/>
+                    <path d="M9.74998 15.1275L7.14748 12.525C6.85498 12.2325 6.38248 12.2325 6.08998 12.525C5.79748 12.8175 5.79748 13.29 6.08998 13.5825L9.22498 16.7175C9.51748 17.01 9.98998 17.01 10.2825 16.7175L18.2175 8.78249C18.51 8.48999 18.51 8.01749 18.2175 7.72499C17.925 7.43249 17.4525 7.43249 17.16 7.72499L9.74998 15.1275Z" fill="white"/>
+					</svg>
+				`);
+			}
+
+	}
+
+	// Function to update the stepper based on form progress
+	function updateStepperProgress() {
+		sections.forEach(section => {
+			checkMandatoryFields(section);
+		});
+	}
 
 	// Attach change event listeners to inputs to trigger stepper updates
 	$('input, select, textarea').on('change keyup', updateStepperProgress);
@@ -756,7 +1111,7 @@ wrapErrorRows();
 		//debugger;
 
         const panelDiv = $(`#${section.divid}`).parent('div');
-        console.log("Panel div HTML:", panelDiv);
+        //console.log("Panel div HTML:", panelDiv);
         
         const sectionHtml = `
             <div id="${section.id}_container" style="display: flex; align-items: center; justify-content: space-between; padding: 20px 20px 20px 20px;" onclick="callMe(this)"  data-target="${section.id}_panel">
@@ -809,6 +1164,7 @@ wrapErrorRows();
 
 	// Attach the click event to toggle arrows, visibility, and warning message using event delegation
 	sections.forEach(section => {
+       // debugger;
 		$(document).on('click', `#${section.id}_container`, function () {
 			//alert(`Section ID: ${section.id}`);
 
@@ -845,22 +1201,12 @@ wrapErrorRows();
 
             const div = $(`#${section.divid}`);
 
-            div.find('.DATE_M, .CHAR_M, .INT_M').each(function () {
+            div.find('.DATE_M, .CHAR_M, .INT_M, .AMT_M').each(function () {
                 if ($(this).val() === "") {
                     allFieldsFilled = false;
                     $(`#${section.id}_warning`).show(); // Show warning if any field is empty
                 } else {
                     $(`#${section.id}_warning`).hide(); // Hide warning if all fields are filled
-                    div.find('.number-circle').hide();
-                }
-            });
-			
-			 div.find('.AMT_M').each(function () {
-                if ($(this).val() === 0 || $(this).val() === "" || $(this).val() === "0" ) {
-                    allFieldsFilled = false;
-                    $(`#${section.id}_warning`).show(); // Show warning if any amt field is empty
-                } else {
-                    $(`#${section.id}_warning`).hide(); // Hide warning if all amt fields are filled
                     div.find('.number-circle').hide();
                 }
             });
@@ -876,15 +1222,13 @@ wrapErrorRows();
 			
 				
         });
-		
-		updateStepperProgress();
     }
 
     // Call this function to check mandatory fields whenever relevant (e.g., on input change)
     $('input, select, textarea').on('change', checkMandatoryFieldsForSections);
   
 
-    function renderTrxSysBtnsDiv1() {
+       function renderTrxSysBtnsDiv1() {
         // Create the div container
         var $trxSysBtnsDiv = $('<div>', { id: 'TrxSysBtnsDiv1', class: 'button-container' });
 
@@ -972,7 +1316,6 @@ wrapErrorRows();
 
     // Function to handle the Next button click
     // Function to handle the Next button click
-    let currentStepIndex = 0;
 
     function handleNextButtonClick() {
         let currentSection = sections[currentStepIndex];
@@ -989,7 +1332,7 @@ wrapErrorRows();
                 firstInput.focus(); // Set focus to the first input element of the new section
             }
         } else {
-            console.log("You are on the last step.");
+            //console.log("You are on the last step.");
             $(`#step_${currentSection.divid}`).find('.DATE_M, .CHAR_M, .INT_M, .AMT_M').on('change keyup', function () {
                 checkMandatoryFieldsForDiv(currentSection.divid);             
                 checkAllMandatoryFields(); 
@@ -1022,7 +1365,7 @@ wrapErrorRows();
     
             // Callback when a date is selected
             onSelect: function(formattedDate, date, inst) {
-                console.log($this.attr('id') + ' date selected: ' + formattedDate);
+                //console.log($this.attr('id') + ' date selected: ' + formattedDate);
                 // Manually trigger the onchange event after date selection
                 $this.trigger('change');
     
@@ -1035,7 +1378,7 @@ wrapErrorRows();
     
             // Callback when datepicker is shown
             onShow: function(inst) {
-                console.log($this.attr('id') + ' datepicker shown');
+                //console.log($this.attr('id') + ' datepicker shown');
                 $this.trigger('focus'); // Trigger focus event when datepicker is shown
             },
     
@@ -1047,7 +1390,7 @@ wrapErrorRows();
     
             // Callback when datepicker is rendered
             onRender: function(inst) {
-                console.log($this.attr('id') + ' datepicker rendered');
+                //console.log($this.attr('id') + ' datepicker rendered');
             }
         });
 
@@ -1080,7 +1423,7 @@ wrapErrorRows();
     
         // Optionally bind custom onblur, onclick, onfocus events
         $this.on('blur', function() {
-            console.log($this.attr('id') + ' field blurred');
+            //console.log($this.attr('id') + ' field blurred');
             // Call custom blur function if needed
             var blurFunctionName = $this.data('onblur');
             if (blurFunctionName && typeof window[blurFunctionName] === 'function') {
@@ -1089,7 +1432,7 @@ wrapErrorRows();
         });
     
         $this.on('focus', function() {
-            console.log($this.attr('id') + ' field focused');
+           // console.log($this.attr('id') + ' field focused');
             // Call custom focus function if needed
             var focusFunctionName = $this.data('onfocus');
             if (focusFunctionName && typeof window[focusFunctionName] === 'function') {
@@ -1098,31 +1441,34 @@ wrapErrorRows();
         });
     
         $this.on('click', function() {
-            console.log($this.attr('id') + ' field clicked');
+            //console.log($this.attr('id') + ' field clicked');
             // Call custom click function if needed
             var clickFunctionName = $this.data('onclick');
             if (clickFunctionName && typeof window[clickFunctionName] === 'function') {
                 window[clickFunctionName]();
             }
         });
-		
-		
     });
 if(SYS_FUNCTION_TYPE == "RE"){
 		//debugger;
 		 $('#number').hide(); // Hide the tick icon
          $('#number1').hide();
 		 $('#number2').hide();
-		 
+		 $('#number3').hide();
+		 $('#number4').hide();
+		 $('#number5').hide();
+		 $('#number6').hide();
 		 $('#tick1').show();
 		 $('#tick2').show();
 		 $('#tick3').show();
-		
+		 $('#tick4').show();
+		 $('#tick5').show();
+		 $('#tick6').show();
 	}
 	
 	function updateButtonStyles(buttonIdToSelect, otherButtonIds) {
         const selectedButton = $(`#${buttonIdToSelect}`);
-        console.log(`Before removal: ${selectedButton.attr('class')}`);  
+        //console.log(`Before removal: ${selectedButton.attr('class')}`);  
    
         selectedButton.addClass('BORDER_BOTTOM_SELECTED')
                       .removeAttr('style')
@@ -1132,115 +1478,66 @@ if(SYS_FUNCTION_TYPE == "RE"){
                         'width': '33.33333%'
                         });
        
-        console.log(`After removal: ${selectedButton.attr('class')}`);  
+        //console.log(`After removal: ${selectedButton.attr('class')}`);  
 
         otherButtonIds.forEach(buttonId => {
             $(`#${buttonId}`).removeClass('BORDER_BOTTOM_SELECTED').addClass('BORDER_RIGHT_WHITE').removeAttr('style');
         });
     }
-	
-	
    
     setTimeout(() => {
-        if (sSelectedFuncId == "F05030701166") {
+        if (sSelectedFuncId == "F05030701031") {
             updateButtonStyles('viewLCButton1', ['unlockLCButton', 'authLCButton']);
-        } else if (sSelectedFuncId == "F05030701170") {
+        } else if (sSelectedFuncId == "F05030701029") {
             updateButtonStyles('authLCButton', ['unlockLCButton', 'viewLCButton1']);
         }
     }, 1000);
+	
+	
+	
+/* // Select the element with class 'four-heading-line'
+const headingElement = document.querySelector('.four-heading-line');
+
+// Select the last '.row-container' element
+const allRowContainers = document.querySelectorAll('.row-container');
+const lastRowContainer = allRowContainers[allRowContainers.length - 3];
+
+// Insert the headingElement after the last '.row-container'
+if (headingElement && lastRowContainer) {
+  lastRowContainer.parentNode.insertBefore(headingElement, lastRowContainer.nextSibling);
+}
+ */
+	
+
+
+
+// Select the target container 
+const targetContainer = $('#3_div');
+
+if (targetContainer.length === 0) {
+    console.warn('#3_div not found.');
+    return;
+}
+
+// Find all elements with class 'four-heading-line'
+const elementsToMove = $('.four-heading-line');
+
+// Move each one to the bottom of #3_div
+elementsToMove.each(function () {
+    $(this).appendTo(targetContainer);
 });
 
 
-function activeStepAftFill(){
-		setTimeout(() => {
-			$('.stepper-container .step').each(function () {
-		var div = ($(this).attr('id')).slice(5);
-		var tickID = sections.find(section => section.divid === div).tickId;
-		if($('#'+tickID).css('display') !== 'none'){
-		  $(this).removeClass('inactive').addClass('active');
-		}
-	  }
-	  )
-		},200)
-	   
-	}
+});
 
-	function stepIconInit(){
-			$('.stepper-container .step-number').each(function () {
-		var div = ($(this).parent().attr('id')).slice(5);
-		var number = sections.find(section => section.divid === div).number;
-
-				$(this).html(`
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<text x="12" y="16" font-family="Roboto" font-size="14" font-weight="400" 
-								fill="var(--icon-color, #FFF)" text-anchor="middle" 
-								style="line-height: 28px; text-align: center;">
-								${number}
-							</text>
-						</svg>
-					`);
-	  }									  
-	  )
-	}
+/* $(document).on('change', 'input[class*="AMT_M"]', 
+	function(event) {
+		NumberConv(event);
+	});
+ */
 
 
-// Function to check mandatory fields for each section and update the stepper accordingly
-	function checkMandatoryFields(section,number) {
-		const div = $(`#${section.divid}`);
-		const stepIcon = $(`#step_${section.divid} .step-number`); // Use the step number element as the icon
-		let allFilled = true;
-
-		// Check if all required fields are filled in the section
-		div.find('.DATE_M, .CHAR_M, .INT_M, .AMT_M').each(function () {
-			if ($(this).val() === "") {
-				allFilled = false;
-			}
-		});
-		
-		div.find('.AMT_M').each(function () {
-			if ($(this).val() === "" || $(this).val() === 0|| $(this).val() === '0' ){
-				allFilled = false;
-			}
-		});
-
-		// Update the step icon based on the completion status
-		if(SYS_FUNCTION_TYPE != 'RE'){
-				if (allFilled) {
-					//debugger;
-				 stepIcon.html(`
-                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="24" height="24" rx="12" fill="#5553AA"/>
-                    <path d="M9.74998 15.1275L7.14748 12.525C6.85498 12.2325 6.38248 12.2325 6.08998 12.525C5.79748 12.8175 5.79748 13.29 6.08998 13.5825L9.22498 16.7175C9.51748 17.01 9.98998 17.01 10.2825 16.7175L18.2175 8.78249C18.51 8.48999 18.51 8.01749 18.2175 7.72499C17.925 7.43249 17.4525 7.43249 17.16 7.72499L9.74998 15.1275Z" fill="white"/>
-					</svg>
-				`);
-				} else {
-            // Reset to step number and use SVG text based on section.number
-				stepIcon.html(`
-					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<text x="12" y="16" font-family="Roboto" font-size="14" font-weight="400" 
-							fill="var(--icon-color, #FFF)" text-anchor="middle" 
-							style="line-height: 28px; text-align: center;">
-							${section.number}
-						</text>
-					</svg>
-				`);
-			}
-           
-        }else if(SYS_FUNCTION_TYPE == 'RE'){
-				 stepIcon.html(`
-                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="24" height="24" rx="12" fill="#5553AA"/>
-                    <path d="M9.74998 15.1275L7.14748 12.525C6.85498 12.2325 6.38248 12.2325 6.08998 12.525C5.79748 12.8175 5.79748 13.29 6.08998 13.5825L9.22498 16.7175C9.51748 17.01 9.98998 17.01 10.2825 16.7175L18.2175 8.78249C18.51 8.48999 18.51 8.01749 18.2175 7.72499C17.925 7.43249 17.4525 7.43249 17.16 7.72499L9.74998 15.1275Z" fill="white"/>
-					</svg>
-				`);
-			}
-
-	}
-
-	// Function to update the stepper based on form progress
-	function updateStepperProgress() {
-		sections.forEach(section => {
-			checkMandatoryFields(section);
-		});
-		activeStepAftFill();
-	}
+ 
+   
+   
+   
