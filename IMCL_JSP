@@ -1,0 +1,1516 @@
+<%@ page import = "com.cs.ce.core.helper.ScriptConvHelper"%>
+<%@ taglib uri = "/EXIMTAGS" prefix = "EXIMTAGS"%>
+<%@ taglib uri = "/CETAGS" prefix = "CETAGS"%>
+
+<EXIMTAGS:IncludeFile filePath="../JS/IMCL_DirectPayment_Event.js"/>
+<EXIMTAGS:IncludeFile filePath="../JS/IMCL_DirectPayment_Function.js"/>
+<EXIMTAGS:IncludeFile filePath="../JS/IMCL_BaseFunc.js"/>
+<EXIMTAGS:IncludeFile filePath="../SYS_JS/CSBaseFunc.js"/>
+<EXIMTAGS:IncludeFile filePath="../SYS_JS/SYS_ActionFunc_CAL.js"/> 
+<EXIMTAGS:IncludeFile filePath="../JS/MainMenu.js"/>
+<EXIMTAGS:IncludeFile filePath="../JS/PastAmend.js"/>
+<EXIMTAGS:IncludeFile filePath="../SYS_JS/jQuery/jquery.autocomplete.js"/>
+
+<EXIMTAGS:IncludeFile filePath="../JS/IMCL_DirectPayment_bundle.js"/>
+<EXIMTAGS:IncludeFile filePath="../JS/air-datepicker.js"/>	
+<EXIMTAGS:IncludeFile filePath="../JS/Buttons.js"/>
+<jsp:include  page="EEBranches.jsp"/>
+
+<link href="../theme/OctLoader.css" rel="stylesheet" type="text/css" />
+
+
+<link href="../theme/bundle.css" rel="stylesheet" type="text/css" />
+<link href="../theme/air-datepicker.css" rel="stylesheet" type="text/css" />
+
+<script language="javascript" type="text/javascript" src="../JS/jsencrypt.min.js"></script>
+<script language="javascript" type="text/javascript" src="../JS/Publickey.js"></script>
+
+	
+
+<style>
+
+
+.backdropAccept2{
+    position: fixed;
+    z-index: 999;
+    display: none;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    background: rgba(0,0,0,0.2);
+}
+#popUpLCAmmend2{
+    height: 200px;
+    width: 28%;
+    position: fixed;
+    top: 41%;
+    left: 37%;
+    background: white;
+	border: 1px solid #BCBEBF;
+    background-color: white;
+}
+.SHIP{
+	background-color:white;
+	height:50px;
+	word-break:break-all;
+	width: 55% !important;
+    left: 5px;
+    position: static;
+    text-align: left;
+    border: 1px solid #7f9db9;
+    font-size: 15px;
+    border-bottom: 1px solid #BCBEBF;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    color: #506070;
+    outline: none;
+    margin-left: 30px;
+    margin-top: 35px;
+    max-width: 460px;
+    max-height: 180px;
+}
+textarea{
+	resize : none !important;
+}
+input:focus {
+    border-bottom: 1px solid #BCBEBF !important;
+}
+textarea:focus {
+    border-bottom: 1px solid #BCBEBF !important;
+	resize : none;
+}
+.tabContainer{
+	height: 15%;
+	background-color: white;
+}
+
+.tabContainer .buttonContainer{
+	width: 100%;
+    height: 50px;
+   	background-image: linear-gradient(to left, #280071, #A5235A 55%, #C72153);
+	opacity: 1;
+	font-family: roboto-regular;
+	
+}
+
+.tabContainer .buttonContainer button{
+	width: 25%;
+	height: 50px;
+	float: left;
+	border: none;
+	cursor: pointer;
+	padding: 10px;
+	font-size: 16px;
+	background-color: transparent;
+	border: 3px 4px 7px 3px solid #d3d3d3;
+	font-family: roboto-regular !important;
+	font-weight: bolder;
+	color: white;
+}
+
+.tabContainer .buttonContainer button:hover{
+	background-color: WHITE;
+    width: 25%;
+    height: 50px;
+    color: #5b1d8d;
+	position: relative;
+	font-family: roboto-regular;
+}
+.tabContainer .buttonContainer button:hover::after{
+	content: "";
+	position: absolute;
+	right: 30%;
+	width: 40%;
+	bottom: 0;
+	border-bottom: 2px solid #5b1d8d;  
+	font-family: roboto-regular;
+}
+
+
+.headingBg1{
+	color: #5b1d8d;
+    font-size: 18px !important;
+    padding-left: 29px;
+    padding-top: 25px;
+}
+
+#historyBtn
+{
+	width : 200px !important;
+    margin-left: 63%;
+}
+#historyBtn:hover
+{
+  width : 200px !important;
+  border: 1px solid #0095DA;
+  background-color: #0095DA;
+}
+
+#submitBtn
+{
+width : 200px !important;
+margin-left: 1%;
+margin-bottom: 6px;
+}
+#submitBtn:hover
+{
+width : 200px !important;
+margin-left: 1%;
+margin-bottom: 6px;
+}
+.rejectOnChange{
+	margin-top: 11px;
+}
+#backBtn
+{
+  width : 200px !important;
+}
+#backBtn:hover
+{
+  width : 200px !important;
+  border: 1px solid #0095DA;
+  background-color: #0095DA;
+}
+#confirmUnLock{
+    height: 200px;
+    width: 22%;
+    position: fixed;
+    top: 41%;
+    left: 41%;
+    background: white;
+    border: 1px solid #BCBEBF;
+}
+
+
+.confirm_button{
+
+    position: fixed;
+    z-index: 999;
+    display: none;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    background: rgba(0,0,0,0.2);
+}
+
+.PopupButton{
+	width: 20% !important;
+    height: 30px;
+    vertical-align: middle;
+    background-color: #E6F6FC;
+    color: rgb(0, 169, 224);
+    border: 1px solid rgb(0, 169, 224);
+    font-size: 15px;
+    font-family: Roboto-regular;
+    border-radius: 7px 7px 7px 7px;
+    cursor: pointer;
+    margin-left: 6%;
+}
+.PopupButton:hover {
+	width: 20% !important;
+    background-color: #0095Da;
+    color: white;
+    border-radius: 7px 7px 7px 7px;
+    border: 1px solid #0095D9;
+	cursor: pointer;
+}
+
+#rejectReason span:before{
+	content: " *";
+	color: red;
+}
+.enable_bttn{
+	width:200px;
+	height:30px;
+	vertical-align:middle;
+	background-color:#E6F6FC;
+	color:#0095da;
+	border: 1px solid #0095da;
+	font-size:15px;
+	font-family: Roboto-regular;
+	border-radius: 7px 7px 7px 7px;
+	cursor: pointer;
+}
+.enable_bttn:hover{
+	background-color: #0095Da;
+    color: white;
+    border-radius: 7px 7px 7px 7px;
+    border: 1px solid #0095D9;
+	cursor: pointer;
+}
+.disable_bttn{
+	WIDTH: 200px!important;
+    height: 30px;
+    border-radius: 7px 7px 7px 7px;
+    cursor: pointer;
+}
+#confirmEadvAuth{
+    height: 200px;
+    width: 22%;
+    position: fixed;
+    top: 41%;
+    left: 41%;
+    background: white;
+	border: 1px solid #BCBEBF;
+	font-size: 15px;
+}
+
+#confirmBoxEadv{
+    height: 200px;
+    width: 22%;
+    position: fixed;
+    top: 41%;
+    left: 41%;
+    background: white;
+	border: 1px solid #BCBEBF;
+	font-size: 15px;
+}
+
+.backdropEadvAuth{
+	position: fixed;
+    z-index: 999;
+    display: none;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    background: rgba(0,0,0,0.2);
+}
+
+.backdropEadvReject{
+    position: fixed;
+    z-index: 999;
+    display: none;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    background: rgba(0,0,0,0.2);
+}
+
+#rejectEadvAuth {
+    width: 33%;
+    HEIGHT: 38%;
+    background: white;
+    margin: auto;
+    vertical-align: middle;
+	margin-top: 10%;
+}
+
+.rejtext {
+    width: 95%;
+    height: 5vw;
+    border-bottom: 1px solid gray;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    background-color: #f7f8fb;
+    resize: none;
+    font-size: 14px;
+}
+.rejectbtns {
+    WIDTH: 200px!important;
+    height: 30px;
+    background-color: #E6F6FC;
+    border-radius: 7px 7px 7px 7px;
+    border: 1px solid #0095DA;
+    color: #0095DA;
+    margin-top: 25px;
+	outline: none;
+}
+.rejectbtns:hover{
+	background-color: #0095D9;
+    color: white;
+    border-radius: 7px 7px 7px 7px;
+    border: 1px solid #0095D9;
+    cursor: pointer;
+}
+#sec_cancel_1:hover{
+	color: white !important;
+	border-radius: 7px 7px 7px 7px;
+	cursor: pointer;
+	border: 1px solid #0095DA !important;
+	background-color: #0095DA  !important;
+}
+
+.enquireViewAll{
+	position: fixed;
+	z-index: 99;    
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background: rgba(0,0,0,0.2);
+	text-align: center;
+	margin: auto;
+	font-size: 15px;
+	font-family: roboto-regular;
+}
+.cancel_btn{
+	width:200px;
+	height:30px;
+	vertical-align:middle;
+	background-color:#E6F6FC;
+	color:#0095da;
+	border: 1px solid #0095da;
+	font-size:15px;
+	font-family: Roboto-regular;
+	border-radius: 7px 7px 7px 7px;
+	cursor: pointer;
+	position: relative;
+	margin-left:20%;
+}
+.UprEnq_LABELS{
+	color: #506070;
+	font-size: 15px;
+	font-weight: bold;		
+	text-align: left;
+	vertical-align: top;
+	white-space: nowrap;			
+	padding-top: 15px;		
+}
+    
+.UprEnq_VALUES{
+	color: #506070;
+	font-size: 15px;				
+	text-align: left;
+	vertical-align: top;
+	white-space: normal;				
+	padding-top: 15px;		
+}
+
+
+.container1 {
+    display: block;
+    position: relative;
+    padding-left: 45px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    user-select: none;
+
+    color: #506070;
+}
+
+
+#declrtntr{
+order:2 !important;
+position:static !important
+}
+
+#remarksdiv{
+order:1 !important;
+position:static !important
+}
+
+
+
+
+#frame\.IMCL_HSNCODE, #frame\.IMCL_DEALER_EFOREX{
+    width: 95% !important;
+    height: 92.5% !important;
+}
+
+#IMCL_HSNCODE{border-width:0;width:1691px !important}
+#IMCL_DEALER_EFOREX{border-width:0;width:1691px !important}
+
+
+</style>
+
+<script type="text/javascript">
+DoFrame.showDO("IMCL_HSNCODE","H_div","HSN Code",null,null,false);
+DoFrame.showDO("IMCL_DEALER_EFOREX","I_div","Customer Rate Details",null,null,false);
+DoFrame.getTemplate();
+//add by martin to refresh the do when change the tab S
+function refreshDO(seq){
+               if (seq == 1) {
+                 var doPanel = DoFrame.getDo("IMCL_HSNCODE");
+				 var doPanel2= DoFrame.getDo("IMCL_DEALER_EFOREX");
+				doPanel.fireEvent("resize");
+				doPanel2.fireEvent("resize");
+               }
+}
+
+$(document).ready(function(){
+	setTimeout(function(){
+		if(sessionStorage.getItem('SingleAuthLB') == "Y"){
+			sessionStorage.setItem('SingleAuthLB','N');			
+			singleAuthorizeLB();		
+		}
+	},2000);	
+});
+
+
+function singleAuthorizeLB(){	
+	var oMainForm = document.forms["MAINFORM"];
+	var nEelement = oMainForm.elements.length;
+	var oField = null;
+	var sFldNm = "";
+	var sDataType = "";
+	var sFldType = "";
+	var sFldValue = "";
+	var sFldTitle = "";
+	var sErrMsg = "Comment";
+	var C_AUDIT_COMMENTR= "OK";
+	$('#confirmAuthorise1').hide();
+	$('.backdropAuthorise').hide();	
+	var mainrefacpt=getFldValue('C_MAIN_REF');
+	sessionStorage.setItem('ImclMainRef',mainrefacpt); 
+	sessionStorage.setItem('sucessmsg','IMCLAuth');	
+	var objForm = document.forms[0];
+	objForm.IsAgreeGroup[0].checked = true;
+	objForm.IsAgreeGroup[1].checked = false;	
+	var i = 0;
+	for (i = 0; i < 2; i++) {
+		if (objForm.IsAgreeGroup[i].checked) {
+			isAgreeValue = objForm.IsAgreeGroup[i].value;
+			objForm.C_IS_AGREE.value = isAgreeValue;
+			break;
+		}
+	}	
+	if (ITEM_ID) {
+		document.forms[0].ITEM_ID.value = ITEM_ID;
+	} else {
+		document.forms[0].ITEM_ID.value = "Release";
+	}	
+	document.forms[0]._TRX_STATUS.value = "RELE";
+	checkerAuthorise();
+}
+
+
+
+
+function callMe(elem) {
+	debugger;
+    // Get the panel ID and panel element associated with the clicked accordion
+    var panelId = elem.getAttribute('data-target');
+    var panel = document.getElementById(panelId);
+
+    // Get stepId from the 'data-target' attribute and find the step element
+    var stepId = elem.getAttribute('data-target');
+    var stepElement = document.getElementById(stepId);
+    
+    // Check if the clicked element is already active
+    var isActive = elem.classList.contains("active");
+
+    // Hide all other accordions
+    hideall();
+
+    // If the clicked element was already active, no need to open it again (it stays closed)
+    if (isActive) {
+        elem.classList.remove("active");
+        return;
+    }
+
+    // Toggle 'active' class for the clicked accordion
+    elem.classList.add("active");
+
+    // Activate the step
+    if (stepElement) {
+        $(stepElement).removeClass('inactive').addClass('active');
+		activeStep = stepElement;
+    }
+
+    // Show the panel
+    if (panel) {
+        panel.style.display = "block";
+
+        if (panel.firstElementChild) {
+            panel.firstElementChild.style.display = "block";
+        }
+
+        // Resize panel based on doName attribute if applicable
+        var doName = panel.getAttribute("doName");
+        if (doName) {
+            resizeDoPanel(doName);
+        }
+
+        // Update arrow display for the current accordion
+        $("#" + elem.id + "_UpArrow").show();
+        $("#" + elem.id + "_DownArrow").hide();
+    }
+
+    // Handle session storage logic for specific role
+    if (sessionStorage.getItem('role') === 'C') {
+        if ($("#APPL_ID").val().indexOf("00000080875812998") === -1) {
+            $("#Id_DocUpload, #Id_AddDocUpload").hide();
+            $("#Id_ImageTable, #Id_renderIcon, #Id_renderName").show();
+        } else {
+            $("#Id_DocUpload").hide();
+            $("#Id_AddDocUpload").show();
+            $("#Id_ImageTable").hide();
+            document.getElementById('tick5').style.display = "inline";
+            isPCDA = true;
+        }
+		
+    }
+	
+}
+function hideall(elem) {
+    var accordion = document.getElementsByClassName("accordion");
+    for (var i = 0; i < accordion.length; i++) {
+        // Remove 'active' class from all accordion elements
+        accordion[i].classList.toggle("active", false);
+		
+		// Get the container ID based on accordion element's ID
+        const newElemId = accordion[i].id + "_container";
+        
+        // Get the container element
+        const newElem = document.getElementById(newElemId);
+		
+        if (newElem) {
+            // Get the panel ID from the 'data-target' attribute
+            var panelId = newElem.getAttribute('data-target');
+            
+            // Get the panel using the panelId
+            var panel = document.getElementById(panelId);
+
+            // Get stepId from the same 'data-target' attribute
+            var stepId = panel.getAttribute('data-target');
+            var stepElement = document.getElementById(stepId);
+
+            if (panel && panel.style.display === "block") {
+                console.log("Hiding panel: " + panelId);
+                
+                // Hide the panel
+                panel.style.display = "none";
+                
+                // Hide the step if it exists
+                if (stepElement) {
+                    $(stepElement).removeClass('active').addClass('inactive');
+                }
+
+                // Also hide the first child if it exists
+                if (panel.firstElementChild) {
+                    panel.firstElementChild.style.display = "none";
+                    console.log("Hiding child of panel: " + panelId);
+                }
+            }
+        }
+    }
+
+    // Show DownArrows and hide UpArrows
+    $("[id$='DownArrow']").show();
+    $("[id$='UpArrow']").hide();
+}
+
+function onExportAs()
+{
+	$('#records_table').show();	
+	$("#exportAsCloseBtn").attr("disabled",false);
+	exportFilesServlet();
+}
+
+function exportAsClose()
+{
+  $('#records_table').hide();  
+}
+</script>
+
+<input name="EMAIL_SUBJECT" type="hidden" class="CHAR_O"id="EMAIL_SUBJECT" title="Email Subject" value="">
+<input name="EMAIL_TO" type="hidden" class="CHAR_O"id="EMAIL_TO" title="Email Send to" value="">
+<input name="COMPANY_UNIT_CODE" type="hidden" class="CHAR_O" id="COMPANY_UNIT_CODE" title="Company unit code" value="">
+<input name="STATUS" type="hidden" class="CHAR_O" id="STATUS" title="Status" value="">
+<input name="C_UNIT_CODE" type="hidden" id="C_UNIT_CODE" title="Company Unit Code">
+<input name="SHIP_FROM" type="hidden" id="SHIP_FROM" title="Shipment From"></td>
+<input name="EMAIL_TEMP" type="hidden" class="CHAR_O" id="EMAIL_TEMP" title="Temporary EMAIL" value="">
+<input name="CPC_CODE" type="hidden" class="CHAR_O" id="CPC_CODE" title="CPC Code">
+<input name="HOME_BRANCH_CODE" type="hidden" id="HOME_BRANCH_CODE" title="Home Branch Code">
+
+
+<input name ="BILL_REF_NO" type="hidden" class="CHAR_O" id="BILL_REF_NO" title="Main ref">
+<input name ="OUR_REF_NO" type="hidden" class="CHAR_O" id="OUR_REF_NO" title="Our ref">
+<input name ="DRWE_ID" type="hidden" class="CHAR_O" id="DRWE_ID" title="DRAWEE ID">
+
+<input name ="ORGN_BR_CODE" type="hidden" class="CHAR_O" id="ORGN_BR_CODE" title="Originating Bank">
+<input name ="TENOR_EVENT" type="hidden" class="CHAR_O" id="TENOR_EVENT" title="TENOR_EVENT">
+<input name ="ACPT_DT_1" type="hidden" class="DATE_O" id="ACPT_DT_1" title="Accept/Reject Date">
+<input name ="ACPT_REJ" type="hidden" class="CHAR_O" id="ACPT_REJ" title="Accept/Reject">
+<input name ="APPL_ID" type="hidden" class="CHAR_O" id="APPL_ID" title="Accept/Reject">
+<input name ="OTHR_BK_REF" type="hidden" class="CHAR_O" id="OTHR_BK_REF" title="Other Bank Reference">
+<input name="ETRADE_FLAG" type="hidden" class="CHAR_O" id="ETRADE_FLAG" value="1">
+<input name="TEMP_ORG_FUNC_ID" type="hidden" class="CHAR_O" id="TEMP_ORG_FUNC_ID" title="TEMP_ORG_FUNC_ID" value="F05030701168">
+<input name ="TEMP_ROW_COUNT" type="hidden" class="CHAR_O" id="TEMP_ROW_COUNT" title="Accept/Reject">
+<input  type="hidden" class="CHAR_O" id="C_TRX_STATUS">
+<input name="C_REFUSE_REASON" type="hidden" class="CHAR_O" id="custom_refuse_res">
+
+
+<input  type="hidden" id="createTemplate"  value="C">
+<input  type="hidden" id="IsLastTabNew"  value="N">
+<input name ="REMIT_BK_NM_ADD" type="hidden" class="CHAR_O" id="REMIT_BK_NM_ADD" title="Other Bank Reference">
+<input name ="COLL_REG_DT" type="hidden" class="CHAR_O" id="COLL_REG_DT" title="Accept/Reject">
+<input name ="C_CREA_BY" type="hidden" class="CHAR_O" id="C_CREA_BY" title="Accept/Reject">
+
+<input name ="TENOR_DAYS" type="hidden" class="CHAR_O" id="TENOR_DAYS" title="Tenor Days">
+<input  name ="DAYS_MONTH" type="hidden" class="CHAR_O" id="DAYS_MONTH" title="Tenor From">
+<input  name ="REASON_NONPAY_ACPT_TEMP" type="hidden" class="CHAR_O" id="REASON_NONPAY_ACPT_TEMP" title="Tenor From">
+<input name="C_MAIN_REF" type="hidden" class="CHAR_O" id="C_MAIN_REF" title="CE Reference number" value="">
+<input name="COUNTRY_NAME" type="hidden" class="CHAR_O" id="COUNTRY_NAME" title="Country Name">
+<input name="COUNTRY_ID" type="hidden" class="CHAR_O" id="COUNTRY_ID" title="Country ID">
+<input name="APPL_ID" type="hidden" class="CHAR_O" id="APPL_ID" title="APPL ID" value="">
+<input name="APPL_NM" type="hidden" class="CHAR_O" id="APPL_NM" title="APPL ID" value="">
+ <input name="EVENT_TIMES" type="hidden" id="EVENT_TIMES">
+<input type="hidden" name="IMCL_HSNCODE" id="D00000000019" eetype="DO">
+<input type="hidden" name="IMCL_DEALER_EFOREX" id="D00000000020" eetype="DO">
+   
+
+
+<div id="Octloader" style="display:none"></div>
+<div id="mainDiv" style="display:;"> 
+		
+<table style="background-color: #e4e4e4; width: 100%; border: 0px; border-spacing: 0px; border-collapse: collapse; margin: auto;padding: 0px;">
+<jsp:include  page="../SCRN/IMCL_Buttons.jsp"/>
+   
+				<tr id="spacer">
+					<td style="height: 10px; width: 100%;">
+						&nbsp;
+					</td>
+				</tr>
+				
+						<tr id="spacer1">
+		<td style="padding: 0px; border: 0px; margin: 0px;">
+			<table style="width: 100%; padding: 0px; border: 0px; margin: 0px;">
+			
+			</table>
+		</td>
+	</tr>
+				
+				
+				
+<tr>
+	<td>
+		<table style="width: 100%; padding: 0px; margin: 0px; display: none;" id="SavedActTrx">
+			
+			              	<tr>
+					<td style="height: 40px; width: 10%; text-align: right; white-space: nowrap;">
+							<div class="editbtn">
+							
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									
+									<span style="color: #673391;font-size: 16px;font-weight: bold;vertical-align: super; cursor: pointer;" id="expportAsid1" onclick="onExportAs();">Export As</span>
+									<img src="/CEWeb/Images/icons/export as pdf.svg" id="expportAsid" style="cursor: pointer;" onclick="onExportAs();"/>
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									
+									<span id="editspan" style="color: #673391;font-size: 16px;font-weight: bold;vertical-align: super; cursor: pointer;" onclick = "enablefields()">Edit</span>
+									
+									<img src="/CEWeb/Images/icons/Edit.svg" alt="EDIT" id="editid" style="cursor: pointer;" onclick = "enablefields()"/>
+							
+							</div>
+						</td>		
+					</tr>
+
+			<tr>
+      <td id="viewAndManageEdits" style="display: none;">
+         <table style="width: 100%; padding: 0px; margin: 0px;">
+            <tr id="activepasttab">
+               <td style="padding: 0px; border: 0px; margin: 0px;">
+                  <table style="width: 100%; padding: 0px; border: 0px; margin: 0px; border-collapse: collapse; border-spacing: 0px;">
+                     <tr id="TabRow">
+                        <td style="width: 100%; padding: 0px; border: 0px; margin: 0px;">
+                           <button type="button" class="faqbtn" style="outline:none;  background-color:#0095da; color: white;" id="activeTab">Active Transactions</button>
+                           <button type="button" class="faqbtn" style="outline:none;" id="pastTab">Past Transactions</button>
+                        </td>
+                     </tr>
+                  </table>
+               </td>
+            </tr>
+          <tr>
+			    <td class="rejectdiv" style="background-color: #FFFFFF; border: 0px; border-spacing: 0px; border-collapse: collapse; margin: auto;padding: 10px; box-shadow: 0px 3px 6px #b9b9b9;">
+						
+							<div class="rejectdiv">
+								<table style="width:100%; height:100%;">
+									<tbody>
+										<tr>
+											<td class="FldLabel" style="padding-top: 20px;">Status:</td>
+											<td style="padding-left: 30px;"><input type="text" class="CHAR_O" style="margin-top: 0px; width: 230px;" id="makerrejstatus"></td>
+										</tr>
+										<tr>
+											<td class="FldLabel" style="padding-top: 20px;">Rejection Reason:</td>
+											<td style="padding-left: 30px;"><textarea rows="4" cols="50" type="text" class="CHAR_O" style="margin-top: 0px; width: 230px;" id="makerrejreason" disabled="disabled"></textarea></td>
+										</tr>	
+<tr>
+											<td class="FldLabel" style="padding-top: 20px;">Last Action Taken By:</td>
+											<td style="padding-left: 30px;"><input type="text" class="CHAR_O" style="margin-top: 0px; width: 230px;" id="LastAction"></td>
+										</tr>										
+									</tbody>
+								</table>				
+							</div>									
+				</td>
+			</tr>
+         </table>
+      </td>
+   </tr>
+        </table>				
+        </td>
+	</tr>
+	<tr id="spacer">
+		<td style="height: 10px; width: 100%;">
+			&nbsp;
+		</td>
+	</tr>
+
+	<tr id="templateTr">
+		<td style="background-color: white">
+				<table style="width: 100%;">
+				<tr >	
+					<td style="text-align: left; width: 50%;">
+						<h2 id="vmPreview1" style="color: #0095da; font-size: 16px;">PREVIEW</h2>
+					</td>					
+					<td id="stepBystep" style="text-align: right; width: 50%;" class="TEMPLATE_ID">
+						<span style="cursor: pointer;">
+					</td>	
+				</tr>
+			</table>
+		</td>
+				
+	</tr>				
+<tr>
+	<td id="directpayDiv" style="background-color: white;width:100%">
+			
+		<div style="padding: 10px; padding-bottom: 2px;">
+		<table style="width: 100%;">
+			<tr>
+				<td>
+					<div class="accordion" id="mainDetails" title="Basic Details">
+								<table style="width: 100%;">
+									<tr>
+										<td style="text-align: left;">
+												<img src="/CEWeb/Images/icons/Tick.svg" href="#" id="tick1" style="margin-bottom: -2px; margin-right: 7px; display:none;"/>
+										</td>
+										<td style="text-align: right;">
+											<img src="/CEWeb/Images/icons/arrow_accor.svg" id="mainDetails_UpArrow" href="#" style="margin-bottom: -2px;margin-right: 7px;"/>
+											<img src="/CEWeb/Images/icons/arrow_accor1.svg" id="mainDetails_DownArrow" href="#" style="margin-bottom: -2px;margin-right: 7px; display: none;"/>
+										</td>
+										<div id="messageDisplaymobil" class="red-message"></div>
+					                </tr>
+				                </table>
+			        </div>
+							<br>
+	<div id="mainDetails_panel" class="panel" style="display:block" >
+		<div id="0_div" class="Tab" title="Basic Details"> 
+			<table>
+           <tbody>
+	         <tr>
+	           <td colspan="3">&nbsp;</td>
+	         </tr>
+<tr>
+      <td width="23%" class="FldLabel">CE Reference</td>
+      <td width="27%"><input name="CUST_REF" type="text" class="CHAR_P" id="CUST_REF" title="CE Reference" size="25"	maxlength="35"></td>
+</tr>
+<tr>
+      <td width="23%" class="FldLabel">Transaction Date</td>
+      <td width="27%"><input type="text" name="COLL_DT" id="COLL_DT" title="Transaction Date" class="DATE_P" maxlength="34" disabled="disabled"></td>
+	  
+</tr>
+<tr>
+	<td width="23%" class="FldLabel">Customer Contact Number for this Transaction</td>
+	<td class="td_gray field_style2">
+	<input type="text" class="CHAR_O" name="CUST_CONTACT" id="CUST_CONTACT" title="Customer Contact Number for this Transaction" size="10" maxlength="10" style="width:45%;"></td>
+</tr>	
+<tr>
+	<td width="23%" class="FldLabel">Customer Mail Id for this transaction</td>
+	<td class="td_gray field_style2">
+	<input type="text" class="CHAR_O" name="EMAIL_ADD2" id="EMAIL_ADD2" title="Customer Email ID for this Transaction" size="50"  maxlength="50" style="width:45%;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</td>
+</tr>		
+</table>
+</div>
+
+	
+
+            <div style="padding: 10px; padding-bottom: 2px;">
+            <table style="width: 100%;">
+               <tr>
+                  <td>
+                     <div id="PartiesTab" title="Bill Details" class="accordion">
+                        <table style="width: 100%;">
+                           <tr>
+                              <td style="text-align: left;">
+                                 <img src="/CEWeb/Images/icons/Tick.svg" href="#" id="tick2" style="margin-bottom: -2px; margin-right: 7px; display:none;">
+                              </td>
+                              <td style="text-align: right;">
+                                 <img src="/CEWeb/Images/icons/arrow_accor.svg" id="PartiesTab_UpArrow" href="#" style="margin-bottom: -2px;margin-right: 7px;  display: none;"/>
+                                 <img src="/CEWeb/Images/icons/arrow_accor1.svg" id="PartiesTab_DownArrow" href="#" style="margin-bottom: -2px;margin-right: 7px;"/>
+                              </td>
+                           </tr>
+                        </table>
+                     </div>
+                     <br>
+					 
+                     <div id="PartiesTab_panel" class="panel" style="display:block" >
+                        <div id="1_div" class="Tab" title="Bill Details">
+                           <table style="width: 100%;">
+                              <tbody>
+                                 <!-- DIV 2 -->
+								 
+								 <tr>
+				 	<td  class="FldLabel" style="padding-top: 50px;">Beneficiary ID</td>
+						<td><input name="DRWR_ID" type="text" class="CHAR_P" id="DRWR_ID" title="Beneficiary ID" size="19" maxlength="35" >
+							<input name="DRAWEE_ID_BT" type="button" class="search" id="DRAWEE_ID_BT" title="Drawee ID Button">
+	          
+                 </td>	
+				</tr>
+								 
+								 <tr>
+				
+				 <td class="FldLabel">Beneficiary Name</td>
+	
+				<td><input id="DRWR_NM" class="CHAR_M" maxlength="35" name="DRWR_NM"  style="width: 250px;resize:none;padding-right: 1px;margin-left: 30px;" title="Beneficiary Name"></input></td>
+	  
+				
+				</tr>
+				<tr>
+				<td class="FldLabel">Beneficiary Address 1</td>
+	
+				<td><input id="DRWR_ADD1" class="CHAR_P" maxlength="35" name="DRWR_ADD1"  onblur="greenTick();"  style="width: 250px;resize:none;padding-right: 1px;"  title="Beneficiary  Address1"></input></td>
+	  
+				</tr>
+				<tr>
+					<td width="23%" class="FldLabel star">Type of Import</td>
+					<td><select name="TYPE_OF_IMPORT" id="TYPE_OF_IMPORT" class="CHAR_M"   onchange = 'TypeofImport();'title="Type of Import">
+					<option value="1">Regular Import</option>
+					<option value="2">Deemed Import</option>
+					<option value="3">Merchanting Trade</option>
+					<option value="4">Others</option>
+					<option value="" selected>PLEASE SELECT</option>
+					</select>
+					</td>
+	</tr>
+	<tr>
+					<td width="23%" class="FldLabel star">Collection Type</td>
+					<td><select name="COLL_TYPE" id="COLL_TYPE" class="CHAR_M"  title="Collection Type">
+					<option value="1">From Overseas Supplier</option>
+					<option value="2">Direct From Customer</option>
+					<option value="" selected>PLEASE SELECT</option>
+					</select>
+					</td>
+			</tr>
+			<tr>
+
+					<td class="FldLabel">Beneficiary Account Number [MT103 - 59]</td>
+
+					<td><input id="DRWR_AC_NO1" class="CHAR_O" maxlength="35"  name="DRWR_AC_NO1"   style="width: 250px;resize:none;padding-right: 1px; padding-top: 1px;margin-left:30px; "  title="Beneficiary Account Number [MT103 - 59]" ></input></td>
+
+			</tr>
+				
+					
+				 
+						<tr>
+                                    <td width="23%" class="FldLabel">Country of Origin & Name</td>
+                                    <td class="td_gray field_style3">
+                                       <select name="CNTY_OF_ORGN" id="CNTY_OF_ORGN" class="CHAR_O" title="Country of Origin">
+                                          <EXIMTAGS:DropDownElement elementType="CNTY_CODE"/>
+                                          <option value="" selected>PLEASE SELECT</option>
+                                       </select>
+                                       <select name="CNTY_OF_ORGN_NM1" id="CNTY_OF_ORGN_NM1" class="CHAR_P" title="Country Name">
+                                          <EXIMTAGS:FldConv fldName="CNTY_OF_ORGN_NM1" smType="false" emptyValue="" blankOption="TRUE" alwaysGetData="TRUE"/>
+                                       </select>
+                                    </td>
+                                 </tr>
+		                            <td class="FldLabel star">Bill CCY & Amount</td>
+	                                <td><select name="COLL_CCY" id="COLL_CCY" class="CHAR_M" title="Bill Currency" onchange="amountInWords(event);">
+                                    <EXIMTAGS:DropDownElement elementType="CCY"/>
+		                            <option value="" selected>Please Select</option></select>
+		                            
+		                            <input name="COLL_AMT" type="text" class="AMT_M" id="COLL_AMT" title="Bill Amount" maxlength="20" onchange="amountInWords(event);" style="width: 180px;margin-left: 0px;">
+		                            </td>	
+	                    </tr>
+						<tr> 		
+											<td style="width:10%;" class="FldLabel">Bill Amount in Words:</td>
+										
+													<td style="width:20%;">
+													<input name="COLL_AMT_WORDS" cols="35" rows="4" type="text" style="margin-top: 38px; height:100px;width:494px; border-bottom: 1px solid #BCBEBF;" class="CHAR_P" id="COLL_AMT_WORDS" title="Bill Amount in Words"  size="20" maxlength="35"/>
+													
+												</td>
+					</tr>
+					<tr>
+
+					<td class="FldLabel">LEI Code</td>
+
+						<td><input id="CP_LEI_NO" class="INT_O" maxlength="15"  name="CP_LEI_NO"  onblur="greenTick();validatePincode();" style="width: 250px;resize:none;padding-right: 1px; padding-top: 1px;margin-left:30px; "  title="LIE Code" onchange="modifyBene_CONS_ADD();"></input></td>
+
+
+					</tr>
+					<tr>
+												<td style="width:10%;" class="FldLabel star">Tenor Type</td>
+													
+												<td style="width:20%;" style="padding-left:25px; padding-right:25px; padding-top: 40px;" colspan="4">
+													<select name="DAY_MON_FLG" id="DAY_MON_FLG" class="CHAR_M" onchange="tenorChange();" title="Tenor Type"  style="width: 150px;margin-left:20px;">										
+														<option value="1">Sight</option>
+														<option value="2">Usance</option>
+														<option value="3">Mixed Payment</option>
+														<option value="4">Deferred Required</option>
+														</select>
+												</td>
+				</tr>
+											
+					
+				 <tr>
+                                    <td width="23%" class="FldLabel star">BOE Received</td>
+                                    <td width="27%">
+                                       <select name="BOE_RECEIVED" id="BOE_RECEIVED" class="CHAR_M" title="BOE Received">
+                                          <option value="1" >Yes</option>
+                                          <option value="2" selected >No</option>
+                                       </select>
+                                    </td>
+             </tr>
+				<tr>
+					<td width="23%" class="FldLabel star">Purpose of Import</td>
+					<td><select name="PURP_OF_IMPORT" id="PURP_OF_IMPORT" class="CHAR_M" title="Purpose of Import">
+					<option value="1">Raw Material</option>
+					<option value="2">Capital Goods</option>
+					<option value="3">Import of Rough Diamonds</option>
+					<option value="4">Import of Aircrafts/Helicopters/Other Aviation</option>
+					<option value="5">Equipment</option>
+					<option value="6">Services</option>
+					<option value="7">Software</option>
+					<option value="8">Others</option>
+					<option value="" selected>PLEASE SELECT</option>
+					</select>
+					</td>
+			</tr>
+			<tr>
+					<td class="FldLabel" id="Description">If Purpose Code is Other, Description</td>
+					<td width="27%"><input  type="text" name="OTHER_DESCP" id="OTHER_DESCP" title="If Purpose Code is Other, Description"   class="CHAR_P" maxlength="100"></td>
+			</tr>
+	<tr>
+			
+				<td class="FldLabel star">Gold Import</td>
+				
+				<td class="td_gray field_style2">
+				<select name="GOLD_IMPORT" id="GOLD_IMPORT" title="Gold Import"  onchange =  'GoldImport();'class="CHAR_P">
+				<option value="Yes">Yes</option>
+				<option value="No" selected="">No</option>
+				<option value="">PLEASE SELECT</option>
+                </select>
+				</td>
+	</tr>
+	<tr>
+				<td  class="FldLabel">Gold Weight Kgs</td>
+				<td width="27%"><input type="text" name="GOLD_WEIGHT" id="GOLD_WEIGHT" title="If Purpose Code is Other, Description"   class="INT_P"size="3" maxlength="10"></td>
+	</tr>
+	
+	
+						
+			
+						
+						</table>
+						  <!-- do -->
+						   <div id="H_div" class="Tab accordion1" title="HSN Code" doName="IMCL_HSNCODE"  style="width:100%"></div>
+						   
+						  
+						   <!-- do -->
+                        </div>
+                     </div>
+                  </td>
+               </tr>
+            </table>
+         </div>
+    
+ <div style="padding: 10px; padding-bottom: 2px;">
+            <table style="width: 100%;">
+               <tr>
+                  <td>
+                     <div id="PaymentDetails" title="Payment Details" class="accordion">
+                        <table style="width: 100%;">
+                           <tr>
+                              <td style="text-align: left;">
+                                 <img src="/CEWeb/Images/icons/Tick.svg" href="#" id="tick3" style="margin-bottom: -2px; margin-right: 7px; display:none;">
+                              </td>
+                              <td style="text-align: right;">
+                                 <img src="/CEWeb/Images/icons/arrow_accor.svg" id="PaymentDetails_UpArrow" href="#" style="margin-bottom: -2px;margin-right: 7px;  display: none;"/>
+                                 <img src="/CEWeb/Images/icons/arrow_accor1.svg" id="PaymentDetails_DownArrow" href="#" style="margin-bottom: -2px;margin-right: 7px;"/>
+                              </td>
+                           </tr>
+                        </table>
+                     </div>
+                     <br>
+					 
+                     <div id="PaymentDetails_panel" class="panel" style="display:block" >
+                        <div id="2_div" class="Tab" title="Payment Details">
+                           <table style="width: 100%;">
+                              <tbody>
+                                 <!-- DIV 2 -->
+								 
+								<tr>
+								 <td class="FldLabel star">Payment CCY & Amount</td>
+	                                <td><select name="COLL_CCY1" id="COLL_CCY1" class="CHAR_P" title="Payment Currency">
+                                    <EXIMTAGS:DropDownElement elementType="CCY"/>
+		                            <option value="" selected>Please Select</option></select>
+                                
+									<input name="DRWNG_AMT_COLL_CCY" type="text" class="AMT_M" id="DRWNG_AMT_COLL_CCY" title="Payment Amount" maxlength="20" onchange="validateAmount(this)" style="width: 180px;margin-left: 0px;">
+                                    </td>
+                                 </tr>
+								 
+								 <tr>
+								 
+								 <td width="23%" class="FldLabel">Payment Request Date</td>	
+								<td width="27%"><input name="COLL_REG_DT" type="text" class="DATE_P" id="COLL_REG_DT" title="Payment Request Date" ></td>
+								 
+								 
+								 </tr>
+								 <tr>
+							<td width="23%" class="FldLabel">Debit Account No for Conversion  Amount</td>
+							<td class="td_gray field_style2">
+									<input type="text" name="NEW_DRWE_AC_NO" id="NEW_DRWE_AC_NO"  maxlength="16" size="26" title="Debit Account No for Conversion  Amoun" class="CHAR_O">
+							</td>	
+							</tr>
+					<tr>
+						<td width="23%" class="FldLabel star">Rate booked ?</td>
+						<td class="td_gray field_style2">
+						<select name="BRCH_RATE" id="BRCH_RATE" title="Rate booked ?" class="CHAR_M">
+							<option value="1">Yes</option>
+							<option value="2"selected>No</option>
+						</select>
+						</td>
+				 </tr>	 
+				 
+				 
+				 
+				 <tr>
+							<td id = "EEFCAmount" class="FldLabel">EEFC Amount in Txn CCY</td>	
+							<td><select name="EEFC_CCY2" id="EEFC_CCY2" class="CHAR_P" title="EEFC Amount in Txn Currency">
+                                    <EXIMTAGS:DropDownElement elementType="CCY"/>
+							<input name="DR_AMT_ACC_NO1" type="text" class="AMT_P" id="DR_AMT_ACC_NO1" title="EEFC Amount in Txn CCY"  size="10" maxlength="19" onchange="amountFormat(this)">
+							</td>
+				</tr>
+				<tr>
+							<td  id = "EEFCAmountTXN" class="FldLabel">EEFC Amount in Txn CCY for Conversion in Other CCY</td>
+							<td><select name="EEFC_CCY3" id="EEFC_CCY3" class="CHAR_P" title="EEFC Amount in Txn Currency">
+                                    <EXIMTAGS:DropDownElement elementType="CCY"/>
+							<input name="ACTUAL_AMT_RECOVER1" type="text" class="AMT_P" id="ACTUAL_AMT_RECOVER1" title="EEFC Amount in Txn CCY for Conversion in Other CCY"   size="10" maxlength="18" onchange="amountFormat(this)"></td>
+				</tr>
+			
+				<tr>
+                                    <td width="23%" class="FldLabel">EEFC Account Number</td>
+                                    <td width="27%"><input name="DRWE_ACC1" type="text" class="AMT_O" id="DRWE_ACC1" title="EEFC Account Number" size="20" maxlength="13"></td>
+                </tr>
+				<tr>
+                                    <td width="23%" class="FldLabel">EEFC Account for Other CCY</td>
+                                    <td width="27%"><input name="DRWE_ACC2" type="text" class="AMT_O" id="DRWE_ACC2" title="EEFC Account Number" size="20" maxlength="13"></td>
+                </tr>
+				<tr>
+                                    <td width="23%" class="FldLabel">PCFC Amount in Txn CCY</td>
+                                    <td><select name="PCFC_CCY2" id="PCFC_CCY2" class="CHAR_P" title="PCFC Amount in Txn Currency">
+                                    <EXIMTAGS:DropDownElement elementType="CCY"/>
+									<input name="PCFC_AMT" type="text" class="AMT_O" id="PCFC_AMT" title="PCFC Amount in Txn CCY" size="20" maxlength="13"></td>
+                </tr>
+				
+				<tr>
+                                    <td width="23%" class="FldLabel">PCFC Amount in TXN CCY for Conversion in Other CCY</td>
+                                    <td><select name="PCFC_CCY3" id="PCFC_CCY3" class="CHAR_P" title="PCFC Amount in TXN CCY for Conversion in Other Currency">
+                                    <EXIMTAGS:DropDownElement elementType="CCY"/>
+									<input name="FC_DELIVERY_AMT" type="text" class="AMT_O" id="FC_DELIVERY_AMT" title="PCFC Amount in TXN CCY for Conversion in Other CCY" style="margin-right: 10px;"
+                                       size="20" maxlength="18"></td>
+                </tr>
+			
+				<tr>
+						<td class="FldLabel">Ready Amount</td>	
+						<td><input name="READY_AMT" type="text" class="AMT_P" id="READY_AMT" title="Ready Amount" size="20" maxlength="18"></td>
+				</tr>
+				<tr>
+						 <td width="171" id ="OTHER_CURRENCY_LBL" class="FldLabel">Other Currency</td>
+						<td><select name="CURRENCY_DRWE_ACC2" id="CCY_DRWE_AC_2" class="CHAR_P" title="Other Currency">
+						<EXIMTAGS:DropDownElement elementType="CCY"/>
+						<option value="" selected>PLEASE SELECT</option>
+						</select></td>
+				</tr>
+				<tr>
+						<td class="FldLabel" style="display:none">Ready Amount2</td>	
+						<td><input name="READY_AMT1" style="display:none" type="text" class="AMT_P" id="READY_AMT1" title="Ready Amount" size="20" maxlength="18"></td>
+				</tr>
+				  <div id="I_div" class="Tab accordion1" title="Customer Rate Details" doName="IMCL_DEALER_EFOREX"  style="width:100%"> </div>
+								 
+								 
+				
+
+
+
+                                
+                              </tbody>
+                           </table>
+						   
+                        </div>
+                     </div>
+                  </td>
+               </tr>
+            </table>
+         </div>	
+ <div style="padding: 10px; padding-bottom: 2px;">
+            <table style="width: 100%;">
+               <tr>
+                  <td>
+				  
+					<div id="Documents" title="Documents received" class="accordion">
+					
+                        <table style="width: 100%;">
+                           <tr>
+                              <td style="text-align: left;">
+                                 <img src="/CEWeb/Images/icons/Tick.svg" href="#" id="tick4" style="margin-bottom: -2px; margin-right: 7px; display:none;">
+                              </td>
+                              <td style="text-align: right;">
+														<img src="/CEWeb/Images/icons/arrow_accor.svg" id="Documents_UpArrow" href="#" style="margin-bottom: -2px;margin-right: 7px;  display: none;"/>
+														<img src="/CEWeb/Images/icons/arrow_accor1.svg" id="Documents_UpArrow" href="#" style="margin-bottom: -2px;margin-right: 7px;"/>
+                              </td>
+                           </tr>
+                        </table>
+                     </div>
+                     <br>
+					 
+		<div id="Documents_panel" class="panel" style="display:block" >
+			<div id="3_div" class="Tab" title="Documents received"> 
+                           <table style="width: 100%;">
+                              <tbody>
+                               <tr class="title">
+					<th  width="90%" style="text-align: center;">Document Descrition</th>
+					<th  width="10%" style="text-align: center;">No.of originals received</th>
+			
+					</tr>
+			<tr>
+		<td class="td_gray">
+			1.Remitting Bank or Customer or Supplier covering Letter
+			</td>
+			<td class="td_gray" >
+			<select style="width:60%;" name="LODG_CERT2" id="LODG_CERT2" title="Commerical Invoice or Tax Invoice  " class="CHAR_M" onchange = 'FLD_IMCC_LODG_CERT2_onchange()'>
+				<option value="" selected=""></option>		
+				<option value="1">1</option>
+				<option value="2">2</option>
+			</select>
+			</td>
+		
+		</tr>
+
+		
+		<tr>
+		<td class="td_gray">
+			2.Commerical Invoice or Tax Invoice 
+		</td>
+		<td class="td_gray" style="text-align:center;">
+			<select style="width:60%;" name="LODG_CERT2" id="LODG_CERT2" title="Commerical Invoice or Tax Invoice  " class="CHAR_M" onchange = 'FLD_IMCC_LODG_CERT2_onchange()'>
+				<option value="" selected=""></option>		
+				<option value="1">1</option>
+				<option value="2">2</option>
+			</select>
+			</td>
+			</tr>
+			<tr>
+		<td class="td_gray">
+			3.Draft/Bill of Exchange
+		</td>
+		<td class="td_gray" style="text-align:center;">
+			<select style="width:60%;" name="LODG_CERT3" id="LODG_CERT3" title="Draft/Bill of Exchange" class="CHAR_O" onchange = 'FLD_IMCC_LODG_CERT3_onchange()'>
+				<option value="" selected=""></option>		
+				<option value="1">1</option>
+				<option value="2">2</option>
+			</select>
+			</td>
+			</tr>
+			<tr>
+		<td class="td_gray">
+			4.Transport Document(s)
+			</td>
+			<td class="td_gray" style="text-align:center;">
+			<select style="width:60%;" name="PAYMT_CERT1" id="PAYMT_CERT1" title="Transport Document(s)" class="CHAR_M" onchange = 'FLD_IMCC_PAYMT_CERT1_onchange()'>
+				<option value="" selected=""></option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+			</select>
+		</td>
+		</tr>
+		<tr>
+		<td class="td_gray">
+		5.Packing List
+			</td>
+			<td class="td_gray" style="text-align:center;">
+			<select style="width:60%;" name="PAYMT_CERT1" id="PAYMT_CERT1" title="Packing List" class="CHAR_M" onchange = 'FLD_IMCC_PAYMT_CERT1_onchange()'>
+				<option value="" selected=""></option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+			</select>
+		</td>
+		</tr>
+		<tr>
+		<td class="td_gray">
+				6.Insurance Policy/Certificate
+			</td>
+			<td class="td_gray" style="text-align:center;">
+			<select style="width:60%;" name="PAYMT_CERT1" id="PAYMT_CERT1" title="Insurance Policy/Certificate" class="CHAR_M" onchange = 'FLD_IMCC_PAYMT_CERT1_onchange()'>
+				<option value="" selected=""></option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+			</select>
+		</td>
+		</tr>
+		<tr>
+		<td class="td_gray">
+		   7.Other documents
+			</td>
+			<td class="td_gray" style="text-align:center;">
+			<select style="width:60%;" name="PAYMT_CERT1" id="PAYMT_CERT1" title="Other documents" class="CHAR_M" onchange = 'FLD_IMCC_PAYMT_CERT1_onchange()'>
+				<option value="" selected=""></option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+			</select>
+		</td>
+		</tr>
+			
+                                
+                              </tbody>
+                           </table>
+						   
+                        </div>
+                     </div>
+                  </td>
+               </tr>
+            </table>
+         </div>	
+
+<div style="padding: 10px; padding-bottom: 2px;">
+		<table style="width: 100%;">
+			<tr>
+				<td>
+					<div class="accordion" id="notesTab" title="Communication">
+								<table style="width: 100%;">
+									<tr>
+										<td style="text-align: left;">
+												<img src="/CEWeb/Images/icons/Tick.svg" href="#" id="tick5" style="margin-bottom: -2px; margin-right: 7px; display:none;"/>
+										</td>
+										<td style="text-align: right;">
+											<img src="/CEWeb/Images/icons/arrow_accor.svg" id="notesTab_UpArrow" href="#" style="margin-bottom: -2px;margin-right: 7px;"/>
+											<img src="/CEWeb/Images/icons/arrow_accor1.svg" id="notesTab_DownArrow" href="#" style="margin-bottom: -2px;margin-right: 7px; display: none;"/>
+										</td>
+										<div id="messageDisplaymobil" class="red-message"></div>
+					                </tr>
+				                </table>
+			        </div>
+							<br>
+	<div id="notesTab_panel" class="panel" style="display:block" >
+		<div id="4_div" class="Tab" title="Communication"> 
+						
+						<table>
+						    <tbody>							                                    
+<tr>
+	<td  class="FldLabel">Receiver Information</td>
+	<td><textarea name="RECV_INFO" cols="14" rows="10" maxlength="140" style="height:100px; width: 85% !important; max-width: 100% !important; border: none; outline: none; resize: none; border-bottom: 1px solid #bcbebf;margin-top:35px;" class="CHAR_P"  id="RECV_INFO" title="Receiver Information" ></textarea></td>		 
+</tr>
+
+<tr>
+     <td class="FldLabel">Internal Notes</td>
+    <td><textarea name="NOTES" cols="14" rows="10" maxlength="140" class="CHAR_O" id="NOTES" title="Internal Notes" style="height:100px; width: 85% !important; max-width: 100% !important; border: none; outline: none; resize: none; border-bottom: 1px solid #bcbebf;margin-top:35px;" ></textarea></td>
+</tr>  
+ 
+</tbody>
+</table>
+</div>
+</div>
+</td>
+</tr>		
+</table>
+</div>	
+		   
+		<div style="padding: 10px; padding-bottom: 2px;">
+		<table style="width: 100%;">
+			<tr>
+				<td>
+					<div class="accordion" id="DocumentsUpload" title="Document Upload">
+								<table style="width: 100%;">
+									<tr>
+										<td style="text-align: left;">
+												<img src="/CEWeb/Images/icons/Tick.svg" href="#" id="tick6" style="margin-bottom: -2px; margin-right: 7px; display:none;"/>
+										</td>
+										<td style="text-align: right;">
+											<img src="/CEWeb/Images/icons/arrow_accor.svg" id="DocumentsUpload_UpArrow" href="#" style="margin-bottom: -2px;margin-right: 7px;"/>
+											<img src="/CEWeb/Images/icons/arrow_accor1.svg" id="DocumentsUpload_DownArrow" href="#" style="margin-bottom: -2px;margin-right: 7px; display: none;"/>
+										</td>
+										<div id="messageDisplaymobil" class="red-message"></div>
+					                </tr>
+				                </table>
+			        </div>
+							<br>
+	<div id="DocumentsUpload_panel" class="panel" style="display:block" >
+		<div id="5_div" class="Tab" title="Document Upload"> 
+                     <table width="691" height="89" id="Id_DocUpload" style="display: none">
+                        <tbody>
+                           <input type="hidden" name="imgType" id="Id_imgType">
+                           <input type="hidden" name="EEFlag" id="Id_docEEFlag">
+                           <input type="hidden" name="DOC_NAME" id="DOC_NAME">
+                           <input name="PCDA_FLAG" type="hidden" id="PCDA_FLAG" value="">
+                           <tr style="display:none;">
+                              <td colspan="4">&nbsp;</td>
+                           </tr>
+                           <tr>
+                              <div style="text-align:left" class="UploadImageLink" id="viewImgLinkDiv">
+                                 <a href="#" onClick="SYS_Upload_Image()" style="font-size: 15px;">Upload / View Document (s)</a>
+                                 
+                              </div>
+                           </tr>
+                        </tbody>
+                     </table>
+                     <br><br>
+                     <table id="Id_ImageTable">
+                        <tbody>
+                           <tr id="Id_renderIcon"></tr>
+                           <tr id="Id_renderName"></tr>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </td>
+         </tr>
+      </tbody>
+   </table>
+</div>	
+
+
+  <!--Maker Confirming Div-->
+<!--<div id="TrxSysBtnsDiv1" style="width: 100%;">
+								<table id="TrxSysBtns1" style="width: 100%;">
+									<tbody>
+										<tr id="TrxSysBtnsRow1">
+											<td id="tdcancel1" nowrap="nowrap" style="text-align: left;">
+												<input type="button" id="sec_cancel" class="sec_cancel" onclick="CancelTransaction()" value="BACK">
+											</td>										
+											<td id="tdsave1" nowrap="nowrap" style="text-align: right;">
+												<input type="button" name="Preview" id="PRE_BT" class="prim_next" value="SUBMIT" onclick="submitTab();">
+												
+											</td>
+										
+										</tr>
+									</tbody>
+								</table>
+							</div>-->
+					<div id="TrxSysBtnsDiv1" class="button-container">
+							<input type="button" id="sec_cancel" class="sec_cancel" value="Cancel" onclick="getFuncIdOnClick_n('2UY7YHFZFQC4')">
+							<input type="button" id="TEMP_BT" class="prim_save" value="Create Template" style="text-align: left">
+							<input type="button" id="prim_save" class="prim_save" value="Save as Draft" style="text-align: left">
+							<input type="button" id="NEXT_BT" class="next-button" value="Next">
+							<input type="button" id="PRE_BT" class="prim_next" value="Preview &amp; Submit" style="display: none;">
+					</div>
+							
+	<!--Checker Confirming Div-->	
+<div id="TrxSysBtnsDivChecker" style="display: none;">
+								<table id="TrxSysBtnsChecker">
+									<tbody>
+										<tr id="TrxSysBtnsRowChecker">
+											<td id="tdcancelChecker" nowrap="nowrap" width="1%">
+												<input type="button" id="sec_cancel" class="sec_cancel" onclick="CancelTransaction()" value="CANCEL">
+											</td>
+											<td nowrap="nowrap" width="100%"></td>
+											<td id="tdconfirmChecker" nowrap="nowrap" width="1%">
+												
+												<input type="button" id="prim_release" class="auth_button" onclick="RejectConfirm();" name="REJECT" value="REJECT">
+												<input type="button" id="prim_release" class="auth_button" onclick="ReleasEConfirm()" name="APPROVE" value="APPROVE">	
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+			
+
+
+ 
+<!--Rejecting trx in checker-->							
+<div class = "backdropReject">
+ <table id="rejectAuthorise" style="display: table;">
+		<tbody>
+		  <tr>
+			<td>
+			  <table style="width: 100%;top: 0px;">
+				<tbody>
+					<tr>
+						<td style="text-align: -webkit-right;top: 0px;">
+						  <img src="/CEWeb/Images/icons/cancel.svg" style="cursor: pointer;" onclick="cancelRejectNo(); $('#C_REFUSE').val('');"/>
+						</td>
+			  		</tr>
+			  <tr>
+				<td style="text-align: -webkit-center;">
+				  <img src="/CEWeb/Images/icons/Reject.PNG" style="height: 55px;">
+				</td>
+			  </tr>
+			  <tr>
+				  <td style=" text-align: -webkit-center; ">
+				<label id="rejectRefNoSet" style="  color: #506070; font-weight: bolder; font-size: 16px; ">Rejecting the Transaction.</br> Please submit the rejected bill back to the bank for processing your request </label>
+				</td>
+			</tr>
+			  
+			  <tr>
+				<td class="FldLabel star" style="  font-weight: bold; padding-left: 30px;">Enter reason for rejection</td>
+			  </tr>	  
+			 <tr>	
+				 <td style=" padding-left: 30px;">	
+				<textarea rows="4" cols="50" class="rejtext" maxlength="100" name="C_REFUSE" id="C_REFUSE"></textarea>
+			  </td></tr>
+		  <tr>
+			<td style="text-align: -webkit-center; ">
+			  <input type="button"  id="P_UM" class="rejectbtns" onclick="cancelRejectNo(); $('#C_REFUSE').val('');" value="CLOSE" style="cursor: pointer;">
+			  <input type="button"  id="P_UM" class="rejectbtns" onclick="cancelRejectYes()" value="SUBMIT" style="cursor: pointer;">
+		  </td>
+	 	 </tr>
+				</tbody>
+			  </table>
+			</td>
+		  </tr>
+		  </tbody>
+		</table> 
+	</div>	
+
+	<!--Authorising div-->
+	<div class = "backdropAuthorise" style="display: none">
+	<div id="confirmAuthorise" style="display: none">
+	<div style="transform:translateY(60%)">
+		<div style="text-align: center;">
+		<span style="font-weight: bold; color: black;">Are you sure you want to approve the Bill</span>
+			<br><br><br>
+			<div>
+				
+					<input type="button" id="P_UC" class="addCSS" value="No" onclick="cancelAuthoriseNo();"/>&nbsp &nbsp &nbsp &nbsp
+				
+				<input type="button" id="P_UM" class="addCSS" value="Yes" onclick="cancelAuthoriseYes();"/>
+			</div>
+		</div>
+	</div>
+	</div>
+</div>   
+
+<!--save confirming div(active trx)-->
+<div class="subbacbutton" style="text-align: center;">
+                            <button type="button" id="backButtonid" class="savedCSS" onclick="CancelTransaction();ResetStdCata();" >BACK</button>
+                            <button type="button" class="savedCSS" id="submitButtonid" onclick="submitTab();">SUBMIT</button>
+	                        <button type="button" class="savedCSS" id="confirmButtonid" onclick="ConfirmTransaction();">CONFIRM</button>	
+</div>	 
+
+<div id="records_table" class="modal" style="display: none;">
+	<div class="records_table_modal-content">
+	<table style="width: 100%; border: 0px; border-spacing: 0px; border-collapse: collapse; text-align: center; margin: auto;" id="exportReportNames">
+		<tr>
+			<td>
+				<img src="/CEWeb/Images/icons/cancel.svg" class="close" id="exportAsCloseBtn" onclick="exportAsClose();" style="padding-bottom: 20px;text-align: right;">
+			</td>
+		</tr>
+  </table>
+  
+ </div>	 		
+</div>
+	
+</td>
+</tr>
+</table>
+
+
+
+<%if("TRUE".equals(ScriptConvHelper.declareScriptVar(request.getParameter("VIEWHISTORY")))){%>
+<CETAGS:ViewReport />
+<%}%>
+
+
+<jsp:include  page="EADV_MessageBox.jsp"/> 
+
+
