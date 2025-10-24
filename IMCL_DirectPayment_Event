@@ -1,0 +1,235 @@
+function OnInit(){
+var authLevelPCDA =  '<%= ((com.cs.core.pojo.UserInfo)session.getAttribute("SS_USER_INFO")).getAuthLevel() %>';
+	if(sessionStorage.getItem('SingleAuthLB') == "Y"){
+		
+	}
+
+	InitValue();
+    try {
+
+        if (SYS_FUNCTION_TYPE == "EC" || SYS_FUNCTION_TYPE == "RE" || SYS_FUNCTION_TYPE == "IQ" || SYS_FUNCTION_TYPE== "DM") {
+            SYS_CONFIRM_FLAG = true;
+           
+        } else {
+            if (SYS_ERROR.length == 0) {
+                SYS_CONFIRM_FLAG = false;
+				//hideFields();
+                InitValue();
+            }
+        }
+	
+       doPageInit();
+	   //rejectfields();
+	  
+    } catch (e) {
+        showExcpt("IMCL_DirectPayment_Event", e);
+    }
+}
+
+function InitValue(){
+	    try {		
+		BRCH_RATE_OnChange();  
+		setFldValue("COMPANY_UNIT_CODE",SYS_CHILD_UNIT);
+		SYS_GetDataBySSS("BranchFetch", "COMPANY_UNIT_CODE");
+	    SYS_GetCUBK("DATA_FETCH","COMPANY_UNIT_CODE");
+		SYS_GetDataBySSS("FetchCPCCode", "HOME_BRANCH_CODE");
+		setFldValue("SOC_CODE", getFldValue("CPC_CODE"));
+		SYS_GetCUBK("EmailTo","HOME_BRANCH_CODE");
+	    var  d= new Date();
+		         setFldValue("COLL_DT",d);
+		GetRef();
+	    
+		setFldValue("COMPANY_UNIT_CODE",SYS_CHILD_UNIT);
+		SYS_GetCUBK("EmailID","COMPANY_UNIT_CODE");
+		var BranchCode = getFldValue("HOME_BRANCH_CODE");
+		var cpcCode=getFldValue("CPC_CODE");
+		if(BranchCode!=cpcCode)
+		{
+			
+			setTimeout("getCPCEmail()",600);
+		}
+            } catch (e) {
+        showExcpt("IMCL_DirectPayment_Event", e);
+		
+		
+    }
+}
+
+function InitFldEvt(){
+    try {	
+		addOnChange("CUST_CONTACT");
+		addOnChange("EMAIL_ADD2");
+	    addOnChange("COLL_TYPE");
+		addOnChange("PURP_OF_IMPORT");
+		addOnClick("DRAWEE_ID_BT");
+		addOnChange("DRWR_ID");
+		addOnChange("CNTY_OF_ORGN");
+		addOnChange("TYPE_OF_IMPORT");
+		addOnChange("COLL_CCY");
+		addOnChange("DRWNG_AMT_COLL_CCY");
+		addOnClick("DEBIT_AMT_DRWE_LCY");
+		addOnChange("BRCH_RATE");	
+		
+    } catch (e) {
+        showExcpt("IMCL_DirectPayment_Event", e);
+    }
+}
+
+function CUST_CONTACT_OnChange(){
+	try{
+		
+			validateNumberCust();
+					
+		
+	}catch (e){
+        showExcpt("IMCL_DirectPayment_Event", e);
+        }
+}
+function EMAIL_ADD2_OnChange(){
+	try{
+		
+	emailValidation();	
+		
+	}catch (e){
+        showExcpt("IMCL_DirectPayment_Event", e);
+        }
+}
+
+function DRAWEE_ID_BT_OnClick(){
+	try {
+	
+		SYS_InqCUBK_Sql("DRWR_ID1", "PARTY_TYPE='BENEFICIARY'");
+		
+		
+		} catch (e) {
+        showExcpt("IMCL_DirectPayment_Event", e);
+    }
+}
+
+function COLL_TYPE_OnChange(){
+	try{
+	
+		IMCL_Coll_Type();
+	
+	}catch (e){
+        showExcpt("IMCL_DirectPayment_Event", e);
+   }
+}
+function PURP_OF_IMPORT_OnChange() {
+	try{
+		OtherDescription();
+		GoldImport();
+	}
+	catch(e)
+	{
+		showExcpt("IMCL_DirectPayment_Event", e);
+        }
+}
+
+function TYPE_OF_IMPORT_OnChange() {
+	try{
+		TypeofImport();
+		
+	}
+	catch(e)
+	{
+		showExcpt("IMCL_DirectPayment_Event", e);
+        }
+}
+function COLL_CCY_OnChange() {
+	try{
+		CollCcy();
+		
+	}
+	catch(e)
+	{
+		showExcpt("IMCL_DirectPayment_Event", e);
+        }
+}
+function DRWNG_AMT_COLL_CCY_OnChange() {
+	try{
+		PaymentAmt();
+		
+	}
+	catch(e)
+	{
+		showExcpt("IMCL_DirectPayment_Event", e);
+        }
+}
+
+function DEBIT_AMT_DRWE_LCY_OnClick(){
+	try {
+	
+		DebitAccNo();
+		
+		
+		} catch (e) {
+        showExcpt("IMCL_DirectPayment_Event", e);
+    }
+}
+function CNTY_OF_ORGN_OnChange()
+{
+	try
+	{
+			setFldValue("COUNTRY_ID",getFldValue("CNTY_OF_ORGN"));
+			SYS_GetDataBySSS("FetchCountryName", "COUNTRY_ID");	
+			setFldValue("CNTY_OF_ORGN_NM1",getFldValue("COUNTRY_NAME"));
+	}
+	catch (e)
+	{
+        showExcpt("IMCL_DirectPayment_Event", e);
+	}
+}
+
+function amountInWords(event){
+	try{
+		if(document.MAINFORM.COLL_AMT.value <= 0){
+			return false;
+		}
+		if(typeof event == 'undefined'){
+			var NumVal = parseFloat(document.MAINFORM.COLL_AMT.value.replace(/,/,""));
+			var event =  document.MAINFORM.COLL_AMT
+		}
+		else
+		var NumVal = event.target.value;
+	
+		var CCY = document.MAINFORM.COLL_CCY.value
+		if(document.MAINFORM.COLL_CCY.value =="INR"){
+			SYT_convNumToStr_Ind(event);
+		}
+		else if(document.MAINFORM.COLL_CCY.value !="INR"){
+			SYT_convNumToStr_Foreign(NumVal,CCY);
+		}
+		}catch (e){
+		 showExcpt("IMCL_DirectPayment_Event", e);
+	}
+}
+
+function DRWR_ID_OnChange(){
+	try{
+	
+		
+			SYS_GetCUBK("DRWR_ID1","DRWR_ID");
+			
+					
+		
+	}catch (e){
+        showExcpt("IMCL_DirectPayment_Event*DRWR_ID_OnChange", e);
+        }
+}
+
+function BRCH_RATE_OnChange(){
+	try {
+	 if (document.getElementById("BRCH_RATE").value == '1'){
+		DoFrame.getDo("IMCL_DEALER_EFOREX").show();
+
+	 refreshDO(1);
+	 }
+	 else if (document.getElementById("BRCH_RATE").value == '2'){
+	DoFrame.getDo("IMCL_DEALER_EFOREX").hide();
+	}
+	
+	} catch (e) {
+        showExcpt("IMCL_DirectPayment_Event*BRCH_RATE_OnChange", e);
+    }
+}
